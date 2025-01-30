@@ -1,15 +1,23 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import React from "react";
-function Product({ products }) {
+function Product({ products, filters }) {
     const handleDelete = function (id) {};
+    const { data, setData, get } = useForm({
+        search: filters?.search || "",
+    });
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        get(route("product"), { preserveState: true });
+    };
 
     const dataMap =
         products.data && products.data.length > 0 ? (
             products.data.map((product, index) => (
                 <tr
                     key={product.id}
-                    className="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900/50 dark:even:bg-gray-950 text-center h-11"
+                    className="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900/50 dark:even:bg-gray-950 text-center h-11 border-b-slate-400"
                 >
                     <td>{index + 1}</td>
                     <td>{product.id}</td>
@@ -18,10 +26,10 @@ function Product({ products }) {
                     <td className="max-w-[150px] truncate overflow-hidden whitespace-nowrap p-3">
                         {product?.image_url && (
                             <img
-                                src={`storage/${product.image_url}`} // Correct path
+                                src={`storage/${product.image_url}`}
                                 alt="Product Image"
                                 className="w-full h-auto"
-                                //loading="lazy" // Lazy loading enabled
+                                loading="lazy" // Lazy loading enabled
                             />
                         )}
                         {product.image_url ?? "null"}
@@ -98,13 +106,37 @@ function Product({ products }) {
     return (
         <AuthenticatedLayout>
             <Head title="Product" />
+            <div className="flex flex-wrap items-center justify-between mt-5 gap-4">
+                {/* Button: Add New Product */}
+                <Link
+                    className="h-[45.6px] px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
+                    href={route("product.create")}
+                >
+                    Add New Product
+                </Link>
 
-            <Link
-                className={`inline-block cursor-pointer mt-5 p-2 bg-blue-500 text-white rounded-md`}
-                href={route("product.create")}
-            >
-                Add New Product
-            </Link>
+                {/* Search Input + Button */}
+                <form
+                    onSubmit={handleSearch}
+                    className="flex items-center gap-2 w-full sm:w-auto"
+                >
+                    <input
+                        type="text"
+                        placeholder="Search by ID or Name"
+                        value={data.search}
+                        onChange={(e) => setData("search", e.target.value)}
+                        className="w-full sm:w-[250px] border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
+                    />
+                    <button
+                        type="submit"
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
+                    >
+                        Search
+                    </button>
+                </form>
+            </div>
+
+            {/* Table Products */}
             <div className="mt-4 p-3 border sm:rounded-lg">
                 <table className="w-full border border-gray-300 rounded-lg overflow-hidden group:">
                     <thead>
@@ -116,9 +148,10 @@ function Product({ products }) {
                             <th>Image_url</th>
                             <th>Description</th>
                             <th>Created_at</th>
-                            <th>updated_at</th>
+                            <th>Updated_at</th>
                             <th>Status</th>
                             <th width="5%">Edit</th>
+                            <th width="5%">Details</th>
                             <th width="5%">Delete</th>
                         </tr>
                     </thead>

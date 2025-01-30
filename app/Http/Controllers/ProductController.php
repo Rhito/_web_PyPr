@@ -11,13 +11,29 @@ use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function index(): Response
-    {
-        $products = Product::with('category') // Eager load the category
-        ->orderBy('id', 'asc')
-        ->paginate(5); // Increased pagination to 10
-        return Inertia::render('AdminView/Product/Product', ['products'=> fn () => $products]);
-    } 
+    
+    public function index(Request $request){
+        $query = Product::query();
+
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+
+            // Check if search input is numeric (assumed to be ID), otherwise search by name
+            if (is_numeric($search)) {
+                $query->where('id', $search);
+            } else {
+                $query->where('name', 'like', '%' . $search . '%');
+            }
+        }
+
+        $products = $query->with('category')->orderBy('id', 'desc')->paginate(10);
+
+        return Inertia::render('AdminView/Product/Product', [
+            'products' => $products,
+            'filters' => $request->only(['search']), // Preserve filter value
+        ]);
+    }
+
 
     public function create(): Response
     {
