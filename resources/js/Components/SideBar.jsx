@@ -36,12 +36,12 @@ function SideBar({ items }) {
                 <div className="relative">
                     <button
                         onClick={toggleDropdown}
-                        className="flex items-center px-4 py-2 hover:bg-gray-700 w-full"
+                        className="flex items-center px-4 py-2 hover:bg-gray-700 w-full transition-all duration-700"
                     >
                         <FontAwesomeIcon icon={faBars} className="me-2" />
                         <p className="hidden lg:block">CRUD</p>
                         <svg
-                            className="-me-0.5 ms-2 h-6 w-6 transition-transform duration-300"
+                            className="-me-0.5 ms-2 h-6 w-6 transition-all duration-300"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
                             fill="currentColor"
@@ -59,7 +59,13 @@ function SideBar({ items }) {
                         </svg>
                     </button>
                     {isOpen && (
-                        <ul className="bg-gray-800 mt-2 rounded ms-4">
+                        <ul
+                            className={`bg-gray-800 mt-2 rounded ms-4 overflow-hidden transition-all duration-700 ease-in-out ${
+                                isOpen
+                                    ? "max-h-[500px] opacity-100"
+                                    : "max-h-0 opacity-0"
+                            }`}
+                        >
                             {items && items.length > 0 ? (
                                 items.map((item, index) => (
                                     <li key={index}>

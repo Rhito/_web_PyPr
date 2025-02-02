@@ -26,28 +26,34 @@ Route::get('/home', function (){
     ]);
 })->name('home');
 
-Route::middleware('check_role')->group(function() {
-    Route::get('/dashboard', function () {
-        return Inertia::render('AdminView/Dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
-
-    Route::prefix('products')->controller(ProductController::class)->group(function(){
-        Route::get('', 'index')->name('product');
-        Route::get('create',  'create')->name('product.create');
-        Route::post('create', 'store');
-    });
- 
-    Route::prefix('category')->controller(CategoryController::class)->group(function(){
-        Route::get('', [CategoryController::class, 'index'])->name('category');
-        Route::get('create', [CategoryController::class, 'create'])->name('category.create');
-        Route::post('create', [CategoryController::class, 'store']);
-    });
-   
-});
-
-
 
 Route::middleware('auth')->group(function () {
+    Route::middleware('check_role')->group(function() {
+        Route::get('/dashboard', function () {
+            return Inertia::render('AdminView/Dashboard');
+        })->middleware(['auth', 'verified'])->name('dashboard');
+    
+        Route::prefix('products')->controller(ProductController::class)->group(function(){
+            Route::get('', 'index')->name('product');
+            Route::get('create',  'create')->name('product.create');
+            Route::post('create', 'store');
+            Route::get('edit/{id}', 'edit')->name('product.edit');
+            Route::post('edit', 'update')->name('product.update');
+            Route::get('details/{id}', 'details')->name('product.details');
+            Route::delete('destroy/{id}', 'destroy')->name('product.destroy');
+        });
+     
+        Route::prefix('category')->controller(CategoryController::class)->group(function(){
+            Route::get('', [CategoryController::class, 'index'])->name('category');
+            Route::get('create', [CategoryController::class, 'create'])->name('category.create');
+            Route::post('create', [CategoryController::class, 'store']);
+            Route::get('edit/{id}', 'edit')->name('category.edit');
+            Route::post('edit', 'update')->name('category.update');
+            Route::get('details/{id}', 'details')->name('category.details');
+            Route::delete('destroy/{id}', 'destroy')->name('category.destroy');
+        });
+       
+    });
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

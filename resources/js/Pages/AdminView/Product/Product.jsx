@@ -1,107 +1,29 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-import React from "react";
+import { React, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 function Product({ products, filters }) {
-    const handleDelete = function (id) {};
-    const { data, setData, get } = useForm({
+    const {
+        data,
+        setData,
+        get,
+        delete: destroy,
+    } = useForm({
         search: filters?.search || "",
     });
+    // Handle Delete ⛔
+    const handleDelete = (id) => {
+        if (confirm("Are you sure you want to delete this product?")) {
+            destroy(route("product.destroy", id));
+        }
+    };
 
+    // Handle Search 🔍
     const handleSearch = (e) => {
         e.preventDefault();
         get(route("product"), { preserveState: true });
     };
-
-    const dataMap =
-        products.data && products.data.length > 0 ? (
-            products.data.map((product, index) => (
-                <tr
-                    key={product.id}
-                    className="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900/50 dark:even:bg-gray-950 text-center h-11 border-b-slate-400"
-                >
-                    <td>{index + 1}</td>
-                    <td>{product.id}</td>
-                    <td>{product.name}</td>
-                    <td>{product.category?.name}</td>
-                    <td className="max-w-[150px] truncate overflow-hidden whitespace-nowrap p-3">
-                        {product?.image_url && (
-                            <img
-                                src={`storage/${product.image_url}`}
-                                alt="Product Image"
-                                className="w-full h-auto"
-                                loading="lazy" // Lazy loading enabled
-                            />
-                        )}
-                        {product.image_url ?? "null"}
-                    </td>
-
-                    <td className="max-w-[250px] truncate overflow-hidden whitespace-nowrap">
-                        {product.description}
-                    </td>
-                    <td>
-                        {product.created_at
-                            ? new Intl.DateTimeFormat("en-UK", {
-                                  year: "numeric",
-                                  month: "numeric",
-                                  day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                              }).format(new Date(product.created_at))
-                            : "null"}
-                    </td>
-                    <td>
-                        {product.updated_at
-                            ? new Intl.DateTimeFormat("en-UK", {
-                                  year: "numeric",
-                                  month: "numeric",
-                                  day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                              }).format(new Date(product.updated_at))
-                            : "null"}
-                    </td>
-
-                    <td
-                        className={`${
-                            product.isActive === "active"
-                                ? "text-green-600"
-                                : "text-gray-400"
-                        }`}
-                    >
-                        {product.isActive}
-                    </td>
-                    <td>
-                        <Link
-                            href={`/edit/${product.id}`}
-                            className="inline-block px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
-                        >
-                            Edit
-                        </Link>
-                    </td>
-                    <td>
-                        <Link
-                            href={`/details/${product.id}`}
-                            className="inline-block px-3 me-1 py-1 text-sm font-medium text-white bg-slate-500 rounded hover:bg-slate-600"
-                        >
-                            Details
-                        </Link>
-                    </td>
-                    <td>
-                        <button
-                            href={`/delete/${product.id}`}
-                            onChange={() => handleDelete(product.id)}
-                            className="inline-block px-3 me-1 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
-                        >
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            ))
-        ) : (
-            <tr className="text-center">
-                <td colSpan={8}>No data</td>
-            </tr>
-        );
 
     return (
         <AuthenticatedLayout>
@@ -131,7 +53,7 @@ function Product({ products, filters }) {
                         type="submit"
                         className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
                     >
-                        Search
+                        <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
                 </form>
             </div>
@@ -144,11 +66,14 @@ function Product({ products, filters }) {
                             <th width="5%">#</th>
                             <th>Id</th>
                             <th>Name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+
                             <th>Category Id</th>
                             <th>Image_url</th>
-                            <th>Description</th>
-                            <th>Created_at</th>
-                            <th>Updated_at</th>
+                            {/* <th>Description</th> */}
+                            {/* <th>Created_at</th>
+                            <th>Updated_at</th> */}
                             <th>Status</th>
                             <th width="5%">Edit</th>
                             <th width="5%">Details</th>
@@ -156,10 +81,102 @@ function Product({ products, filters }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {dataMap}
-                        {products.length === 0 && (
+                        {products.data.length > 0 ? (
+                            products.data.map((product, index) => (
+                                <tr
+                                    key={product.id}
+                                    className="odd:bg-white even:bg-gray-50 text-center h-12 border-b hover:bg-gray-100 transition"
+                                >
+                                    <td className="p-3">{index + 1}</td>
+                                    <td>{product.id}</td>
+                                    <td className="font-medium">
+                                        {product.name}
+                                    </td>
+                                    <td className="font-medium">
+                                        {product.price}
+                                    </td>
+                                    <td className="font-medium">
+                                        {product.stock}
+                                    </td>
+
+                                    <td>{product.category?.name ?? "N/A"}</td>
+                                    <td className="max-w-[150px] truncate p-3">
+                                        {product?.image_url ? (
+                                            <img
+                                                src={`storage/${product.image_url}`}
+                                                alt="Product Image"
+                                                className="w-full h-auto rounded shadow"
+                                                loading="lazy"
+                                            />
+                                        ) : (
+                                            "No Image"
+                                        )}
+                                    </td>
+                                    {/* <td className="max-w-[250px] truncate">
+                                        {product.description}
+                                    </td>
+                                    <td>
+                                        {new Intl.DateTimeFormat("en-UK", {
+                                            year: "numeric",
+                                            month: "numeric",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        }).format(new Date(product.created_at))}
+                                    </td>
+                                    <td>
+                                        {new Intl.DateTimeFormat("en-UK", {
+                                            year: "numeric",
+                                            month: "numeric",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        }).format(new Date(product.updated_at))}
+                                    </td> */}
+                                    <td
+                                        className={`font-bold ${
+                                            product.isActive === "active"
+                                                ? "text-green-600"
+                                                : "text-gray-400"
+                                        }`}
+                                    >
+                                        {product.isActive}
+                                    </td>
+                                    <td>
+                                        <Link
+                                            href={route("product.edit", {
+                                                id: product.id,
+                                            })}
+                                            className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
+                                        >
+                                            Edit
+                                        </Link>
+                                    </td>
+                                    <td>
+                                        <Link
+                                            href={route("product.details", {
+                                                id: product.id,
+                                            })}
+                                            className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded hover:bg-gray-600"
+                                        >
+                                            Details
+                                        </Link>
+                                    </td>
+                                    <td>
+                                        <button
+                                            onClick={() =>
+                                                handleDelete(product.id)
+                                            }
+                                            className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
                             <tr>
-                                <td colSpan="7" className="text-center">
+                                <td colSpan="12" className="text-center py-4">
                                     No products found.
                                 </td>
                             </tr>
