@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProductRequest extends FormRequest
+class CategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,27 +18,13 @@ class ProductRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     *  
      */
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'min:0','max:255'],
-            'category_id' => ['required'],
-            'image_url' => ['required', 'image', 'mimes:jpg,jpeg,png,gif', 'max:2048'],
-            'stock' => ['required','min:0'],
-            'price' => ['required','min:0'],
-            'price' => ['required','min:0'],
-            'stock' => ['required','min:0'],
-            'description' => ['nullable','string'],
-            'isActive' => ['required'],
-        ];
-    }
-    public function messages()
-    {
-        return [
-            
-            
+            'desciption' => ['nullable'],
+            'parent_id' => ['nullable'],
         ];
     }
 }

@@ -9,7 +9,8 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="../images/a194f826-40a1-4700-97f3-2d23f1a5d936-removebg.jpg" />
         <!-- Scripts -->
         @routes
         @viteReactRefresh

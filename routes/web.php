@@ -4,7 +4,7 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Models\Category;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -44,13 +44,23 @@ Route::middleware('auth')->group(function () {
         });
      
         Route::prefix('category')->controller(CategoryController::class)->group(function(){
-            Route::get('', [CategoryController::class, 'index'])->name('category');
-            Route::get('create', [CategoryController::class, 'create'])->name('category.create');
-            Route::post('create', [CategoryController::class, 'store']);
+            Route::get('', 'index')->name('category');
+            Route::get('create', 'create')->name('category.create');
+            Route::post('create', 'store');
             Route::get('edit/{id}', 'edit')->name('category.edit');
             Route::post('edit', 'update')->name('category.update');
             Route::get('details/{id}', 'details')->name('category.details');
             Route::delete('destroy/{id}', 'destroy')->name('category.destroy');
+        });
+
+        Route::prefix('users')->controller(UserController::class)->group(function(){
+            Route::get('', 'index')->name('user');
+            Route::get('create', 'create')->name('user.create');
+            Route::post('create', 'store');
+            Route::get('edit/{id}', 'edit')->name('user.edit');
+            Route::post('edit', 'update')->name('user.update');
+            Route::get('details/{id}', 'details')->name('user.details');
+            Route::delete('destroy/{id}', 'destroy')->name('user.destroy');
         });
        
     });

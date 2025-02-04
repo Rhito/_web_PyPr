@@ -11,7 +11,17 @@ export default function AuthenticatedLayout({ header, children }) {
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-    const dropDownList = [{ label: "Product" }, { label: "Category" }];
+    const dropDownList = [
+        { label: "User" },
+        { label: "Product" },
+        { label: "Category" },
+        // { label: "Order" },
+        // { label: "OrderDetail" },
+        // { label: "Payment" },
+        // { label: "Coupon" },
+        // { label: "Review" },
+        // { label: "Shipping" },
+    ];
 
     return (
         <>

@@ -66,7 +66,7 @@ class ProductController extends Controller
         $log->action = "Created product";
         $log->save();
        // Redirect back with a success message
-       return redirect()->route('product')->with('success', 'Product created successfully!');
+       return redirect()->route('product')->with(['success'=> 'Product created successfully!']);
     }
 
     public function edit($id) {
@@ -81,11 +81,11 @@ class ProductController extends Controller
             'name' => ['required', 'string', 'min:0','max:255'],
             'category_id' => ['required'],
             'image_url' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif', 'max:2048'],
-            'stock' => ['required|min:0'],
-            'price' => ['required|min:0'],
-            'price' => ['required|numeric|min:0'],
-            'stock' => ['required|integer|min:0'],
-            'description' => ['nullable|string'],
+            'stock' => ['required','min:0'],
+            'price' => ['required','min:0'],
+            'price' => ['required','numeric','min:0'],
+            'stock' => ['required','integer','min:0'],
+            'description' => ['nullable','string'],
             'isActive' => ['required'],
         ]);
       
@@ -113,7 +113,7 @@ class ProductController extends Controller
         $log->action = "Update product - Id: ". $request->id;
         $log->save();
         
-        return redirect('products')->with('success', 'Product edit successfully');
+        return redirect('products')->with(['success' => 'Product edit successfully']);
     }
 
     public function details($id) {
@@ -133,6 +133,6 @@ class ProductController extends Controller
         $log->user_id = Auth::id();
         $log->action = "Delete product - Id: ". $id;
         $log->save();
-        return redirect('products')->with('success', 'Product deleted successfully');
+        return redirect('products')->with(['success'=>'Product deleted successfully']);
     }
 }

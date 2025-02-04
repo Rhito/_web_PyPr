@@ -1,8 +1,9 @@
+import { React } from "react";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Textarea } from "@headlessui/react";
 import { Head, useForm } from "@inertiajs/react";
-import { React } from "react";
+
 function CreateProduct({ categoryName }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
@@ -32,6 +33,7 @@ function CreateProduct({ categoryName }) {
             }
         >
             <Head title="Create Product" />
+
             <form
                 autoComplete="off"
                 onSubmit={handleSubmit}
@@ -221,7 +223,7 @@ function CreateProduct({ categoryName }) {
                         Description
                     </label>
                     <Textarea
-                        type="type"
+                        type="text"
                         id="description"
                         placeholder="Description..."
                         value={data.description}

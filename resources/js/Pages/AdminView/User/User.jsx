@@ -4,8 +4,7 @@ import { React, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
-
-function Product({ products, filters, flash }) {
+function User({ users, filters, flash }) {
     const {
         data,
         setData,
@@ -16,8 +15,8 @@ function Product({ products, filters, flash }) {
     });
     // Handle Delete ⛔
     const handleDelete = (id) => {
-        if (confirm("Are you sure you want to delete this product?")) {
-            destroy(route("product.destroy", id));
+        if (confirm("Are you sure you want to delete this user?")) {
+            destroy(route("user.destroy", id));
         }
     };
 
@@ -34,20 +33,19 @@ function Product({ products, filters, flash }) {
     // Handle Search 🔍
     const handleSearch = (e) => {
         e.preventDefault();
-        get(route("product"), { preserveState: true });
+        get(route("user"), { preserveState: true });
     };
-
     return (
         <AuthenticatedLayout>
-            <Head title="Product" />
+            <Head title="Users" />
             <ToastContainer />
             <div className="flex flex-wrap items-center justify-between mt-5 gap-4">
-                {/* Button: Add New Product */}
+                {/* Button: Add New User */}
                 <Link
                     className="h-[45.6px] px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
-                    href={route("product.create")}
+                    href={route("user.create")}
                 >
-                    Add New Product
+                    Add New User
                 </Link>
 
                 {/* Search Input + Button */}
@@ -70,8 +68,7 @@ function Product({ products, filters, flash }) {
                     </button>
                 </form>
             </div>
-
-            {/* Table Products */}
+            {/* Table categorys */}
             <div className="mt-4 p-3 border sm:rounded-lg">
                 <table className="w-full border border-gray-300 rounded-lg overflow-hidden group:">
                     <thead>
@@ -79,86 +76,83 @@ function Product({ products, filters, flash }) {
                             <th width="5%">#</th>
                             <th>Id</th>
                             <th>Name</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-
-                            <th>Category Id</th>
-                            <th>Image_url</th>
-                            {/* <th>Description</th> */}
-                            {/* <th>Created_at</th>
-                            <th>Updated_at</th> */}
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Avatar</th>
+                            <th>Role</th>
                             <th>Status</th>
+                            {/* <th>Address</th>
+                            <th>Created_at</th>
+                            <th>Updated_at</th> */}
                             <th width="5%">Edit</th>
                             <th width="5%">Details</th>
                             <th width="5%">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {products.data.length > 0 ? (
-                            products.data.map((product, index) => (
+                        {users.data.length > 0 ? (
+                            users.data.map((user, index) => (
                                 <tr
-                                    key={product.id}
+                                    key={user.id}
                                     className="odd:bg-white even:bg-gray-50 text-center h-12 border-b hover:bg-gray-100 transition"
                                 >
                                     <td className="p-3">{index + 1}</td>
-                                    <td>{product.id}</td>
+                                    <td>{user.id}</td>
+                                    <td className="font-medium">{user.name}</td>
                                     <td className="font-medium">
-                                        {product.name}
+                                        {user.email}
                                     </td>
                                     <td className="font-medium">
-                                        {product.price}
+                                        {user.phone ?? "null"}
                                     </td>
-                                    <td className="font-medium">
-                                        {product.stock}
-                                    </td>
-
-                                    <td>{product.category?.name ?? "N/A"}</td>
-                                    <td className="max-w-[150px] truncate p-3">
-                                        {product?.image_url ? (
+                                    <td className="max-w-[150px] truncate p-3 ">
+                                        {user?.avatar ? (
                                             <img
-                                                src={`storage/${product.image_url}`}
-                                                alt="Product Image"
-                                                className="w-20 h-auto rounded shadow"
+                                                src={`storage/${user.avatar}`}
+                                                alt={user.avatar}
+                                                // className="w-full h-auto rounded shadow"
+                                                className="m-auto w-20 h-20 object-cover rounded-full mb-2"
                                                 loading="lazy"
                                             />
                                         ) : (
                                             "No Image"
                                         )}
                                     </td>
-                                    {/* <td className="max-w-[250px] truncate">
-                                        {product.description}
-                                    </td>
-                                    <td>
-                                        {new Intl.DateTimeFormat("en-UK", {
-                                            year: "numeric",
-                                            month: "numeric",
-                                            day: "numeric",
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        }).format(new Date(product.created_at))}
-                                    </td>
-                                    <td>
-                                        {new Intl.DateTimeFormat("en-UK", {
-                                            year: "numeric",
-                                            month: "numeric",
-                                            day: "numeric",
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        }).format(new Date(product.updated_at))}
-                                    </td> */}
+                                    <td className="font-medium">{user.role}</td>
+
                                     <td
                                         className={`font-bold ${
-                                            product.isActive === "active"
+                                            user.is_active === "active"
                                                 ? "text-green-600"
                                                 : "text-gray-400"
                                         }`}
                                     >
-                                        {product.isActive}
+                                        {user.is_active}
                                     </td>
+
+                                    {/* <td className="font-medium">
+                                        {new Intl.DateTimeFormat("en-UK", {
+                                            year: "numeric",
+                                            month: "numeric",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        }).format(new Date(cate.updated_at))}
+                                    </td>
+                                    <td className="font-medium">
+                                        {new Intl.DateTimeFormat("en-UK", {
+                                            year: "numeric",
+                                            month: "numeric",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        }).format(new Date(cate.created_at))}
+                                    </td> */}
+
                                     <td>
                                         <Link
-                                            href={route("product.edit", {
-                                                id: product.id,
+                                            href={route("user.edit", {
+                                                id: user.id,
                                             })}
                                             className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
                                         >
@@ -167,8 +161,8 @@ function Product({ products, filters, flash }) {
                                     </td>
                                     <td>
                                         <Link
-                                            href={route("product.details", {
-                                                id: product.id,
+                                            href={route("user.details", {
+                                                id: user.id,
                                             })}
                                             className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded hover:bg-gray-600"
                                         >
@@ -178,7 +172,7 @@ function Product({ products, filters, flash }) {
                                     <td>
                                         <button
                                             onClick={() =>
-                                                handleDelete(product.id)
+                                                handleDelete(user.id)
                                             }
                                             className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                                         >
@@ -190,7 +184,7 @@ function Product({ products, filters, flash }) {
                         ) : (
                             <tr>
                                 <td colSpan="12" className="text-center py-4">
-                                    No products found.
+                                    No categorys found.
                                 </td>
                             </tr>
                         )}
@@ -199,12 +193,12 @@ function Product({ products, filters, flash }) {
             </div>
             <nav className="text-center mt-2">
                 <ul className="flex items-center justify-center space-x-2">
-                    {products.links.map((link, index) => {
+                    {users.links.map((link, index) => {
                         let label = link.label;
                         if (index === 0) {
                             label = "Previous";
                         }
-                        if (index === products.links.length - 1) {
+                        if (index === users.links.length - 1) {
                             label = "Next";
                         }
                         return (
@@ -235,4 +229,4 @@ function Product({ products, filters, flash }) {
     );
 }
 
-export default Product;
+export default User;
