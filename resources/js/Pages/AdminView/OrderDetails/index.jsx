@@ -4,7 +4,10 @@ import { React, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
-function User({ users, filters, flash }) {
+function index({ orderDetails, filters, flash }) {
+    console.log(orderDetails);
+
+    // Innitialize useForm
     const {
         data,
         setData,
@@ -13,19 +16,20 @@ function User({ users, filters, flash }) {
     } = useForm({
         search: filters?.search || "",
     });
+
     // Handle Delete ⛔
     const handleDelete = (id) => {
-        if (confirm("Are you sure you want to delete this user?")) {
-            destroy(route("user.destroy", id));
+        if (confirm("Are you sure you want to delete this order details?")) {
+            destroy(route("order-details.destroy", id));
         }
     };
 
     // Notification
     useEffect(() => {
-        if (flash.message.success) {
+        if (flash?.message?.success) {
             toast.success(flash.message.success);
         }
-        if (flash.message.error) {
+        if (flash?.message?.error) {
             toast.error(flash.message.error);
         }
     }, [flash]);
@@ -33,25 +37,25 @@ function User({ users, filters, flash }) {
     // Handle Search 🔍
     const handleSearch = (e) => {
         e.preventDefault();
-        get(route("user"), { preserveState: true });
+        get(route("order-details.index"), { preserveState: true });
     };
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Users
+                    Order Details
                 </h2>
             }
         >
-            <Head title="Users" />
+            <Head title="Order Details" />
             <ToastContainer />
             <div className="flex flex-wrap items-center justify-between mt-5 gap-4">
-                {/* Button: Add New User */}
+                {/* Button: Add New order Details */}
                 <Link
                     className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
-                    href={route("user.create")}
+                    href={route("order-details.create")}
                 >
-                    Add New User
+                    Add New Order Details
                 </Link>
 
                 {/* Search Input + Button */}
@@ -61,7 +65,7 @@ function User({ users, filters, flash }) {
                 >
                     <input
                         type="text"
-                        placeholder="Search by ID or Name"
+                        placeholder="Search by ID or "
                         value={data.search}
                         onChange={(e) => setData("search", e.target.value)}
                         className="w-full sm:w-[250px] border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
@@ -74,101 +78,64 @@ function User({ users, filters, flash }) {
                     </button>
                 </form>
             </div>
-            {/* Table categorys */}
+            {/* Table Order Details */}
             <div className="mt-4 p-3 border sm:rounded-lg">
                 <table className="w-full border border-gray-300 rounded-lg overflow-hidden group:">
                     <thead>
                         <tr className="text-center border h-11">
                             <th width="5%">#</th>
                             <th>Id</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Avatar</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            {/* <th>Address</th>
-                            <th>Created_at</th>
+                            <th>Order Id</th>
+                            <th>Product Id</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total Amount</th>
+                            {/* <th>Created_at</th>
                             <th>Updated_at</th> */}
-                            <th width="5%">Edit</th>
                             <th width="5%">Details</th>
+                            <th width="5%">Edit</th>
                             <th width="5%">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {users.data.length > 0 ? (
-                            users.data.map((user, index) => (
+                        {orderDetails.data.length > 0 ? (
+                            orderDetails.data.map((orderD, index) => (
                                 <tr
-                                    key={user.id}
-                                    className="odd:bg-white even:bg-gray-50 text-center h-12 border-b hover:bg-gray-100 transition"
+                                    key={orderD.id}
+                                    className="odd:bg-white even:bg-gray-50 text-center h-12 borderD-b hover:bg-gray-100 transition"
                                 >
                                     <td className="p-3">{index + 1}</td>
-                                    <td>{user.id}</td>
-                                    <td className="font-medium">{user.name}</td>
+                                    <td className="p-3">{orderD.id}</td>
+                                    <td className="p-3">{orderD.order_id}</td>
+                                    <td className="p-3">{orderD.product_id}</td>
+                                    <td className="p-3">{orderD.quantity}</td>
+                                    <td className="p-3">{orderD.unit_price}</td>
                                     <td className="font-medium">
-                                        {user.email}
-                                    </td>
-                                    <td className="font-medium">
-                                        {user.phone ?? "null"}
-                                    </td>
-                                    <td className="max-w-[150px] truncate p-3 ">
-                                        {user?.avatar ? (
-                                            <img
-                                                src={`storage/${user.avatar}`}
-                                                alt={user.avatar}
-                                                // className="w-full h-auto rounded shadow"
-                                                className="m-auto w-20 h-20 object-cover rounded-full mb-2"
-                                                loading="lazy"
-                                            />
-                                        ) : (
-                                            "No Image"
-                                        )}
-                                    </td>
-                                    <td className="font-medium">{user.role}</td>
-
-                                    <td
-                                        className={`font-bold ${
-                                            user.is_active === "active"
-                                                ? "text-green-600"
-                                                : "text-gray-400"
-                                        }`}
-                                    >
-                                        {user.is_active}
+                                        {orderD.quantity * orderD.unit_price}
                                     </td>
 
-                                    {/* <td className="font-medium">
+                                    {/* <td>
                                         {new Intl.DateTimeFormat("en-UK", {
                                             year: "numeric",
                                             month: "numeric",
                                             day: "numeric",
                                             hour: "2-digit",
                                             minute: "2-digit",
-                                        }).format(new Date(cate.updated_at))}
+                                        }).format(new Date(orderD.created_at))}
                                     </td>
-                                    <td className="font-medium">
+                                    <td>
                                         {new Intl.DateTimeFormat("en-UK", {
                                             year: "numeric",
                                             month: "numeric",
                                             day: "numeric",
                                             hour: "2-digit",
                                             minute: "2-digit",
-                                        }).format(new Date(cate.created_at))}
+                                        }).format(new Date(orderD.updated_at))}
                                     </td> */}
-
                                     <td>
                                         <Link
-                                            href={route("user.edit", {
-                                                id: user.id,
-                                            })}
-                                            className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
-                                        >
-                                            Edit
-                                        </Link>
-                                    </td>
-                                    <td>
-                                        <Link
-                                            href={route("user.details", {
-                                                id: user.id,
+                                            href={route("order-details.show", {
+                                                id: orderD.id,
                                             })}
                                             className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded hover:bg-gray-600"
                                         >
@@ -176,21 +143,32 @@ function User({ users, filters, flash }) {
                                         </Link>
                                     </td>
                                     <td>
-                                        <button
+                                        <Link
+                                            href={route("order-details.edit", {
+                                                id: orderD.id,
+                                            })}
+                                            className="w-full px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
+                                        >
+                                            Edit
+                                        </Link>
+                                    </td>
+
+                                    <td>
+                                        <a
                                             onClick={() =>
-                                                handleDelete(user.id)
+                                                handleDelete(orderD.id)
                                             }
-                                            className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
+                                            className="cursor-pointer px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                                         >
                                             Delete
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
                                 <td colSpan="12" className="text-center py-4">
-                                    No categorys found.
+                                    No orders found.
                                 </td>
                             </tr>
                         )}
@@ -199,12 +177,12 @@ function User({ users, filters, flash }) {
             </div>
             <nav className="text-center mt-2">
                 <ul className="flex items-center justify-center space-x-2">
-                    {users.links.map((link, index) => {
+                    {orderDetails.links.map((link, index) => {
                         let label = link.label;
                         if (index === 0) {
                             label = "Previous";
                         }
-                        if (index === users.links.length - 1) {
+                        if (index === orderDetails.links.length - 1) {
                             label = "Next";
                         }
                         return (
@@ -235,4 +213,4 @@ function User({ users, filters, flash }) {
     );
 }
 
-export default User;
+export default index;

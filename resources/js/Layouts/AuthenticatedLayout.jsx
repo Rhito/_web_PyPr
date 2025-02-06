@@ -11,22 +11,22 @@ export default function AuthenticatedLayout({ header, children }) {
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-    const dropDownList = [
-        { label: "User" },
-        { label: "Product" },
-        { label: "Category" },
-        // { label: "Order" },
-        // { label: "OrderDetail" },
-        // { label: "Payment" },
-        // { label: "Coupon" },
-        // { label: "Review" },
-        // { label: "Shipping" },
+    const navItems = [
+        { name: "Products", route: "product", prefix: "product" },
+        { name: "Users", route: "user", prefix: "user" },
+        { name: "Categories", route: "category", prefix: "category" },
+        { name: "Orders", route: "orders.index", prefix: "orders" },
+        {
+            name: "Order Detailss",
+            route: "order-details.index",
+            prefix: "orders-details",
+        },
     ];
 
     return (
         <>
             <div className="grid grid-cols-[4rem_1fr] md:grid-cols-[5rem_1fr] lg:grid-cols-[16rem_1fr] h-screen ">
-                <SideBar items={dropDownList} />
+                <SideBar navItems={navItems} />
                 {/* Main Content */}
                 <div className="bg-gray-100 p-8">
                     <div className="min-h-screen bg-gray-100">
@@ -36,7 +36,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                     <div className="flex">
                                         <div className="flex shrink-0 items-center">
                                             <Link href="/">
-                                                <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                                <ApplicationLogo className="block w-12 h-auto scale-110 fill-current text-gray-800" />
                                             </Link>
                                         </div>
 

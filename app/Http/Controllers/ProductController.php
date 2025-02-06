@@ -59,7 +59,6 @@ class ProductController extends Controller
         $products->description = $request->description;
         $products->isActive = $request->isActive;
         $products->save();
-   
 
         $log = new Log();
         $log->user_id = Auth::id();

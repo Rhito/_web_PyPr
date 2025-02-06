@@ -2,10 +2,15 @@
 
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Models\Order;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -32,7 +37,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', function () {
             return Inertia::render('AdminView/Dashboard');
         })->middleware(['auth', 'verified'])->name('dashboard');
-    
+
         Route::prefix('products')->controller(ProductController::class)->group(function(){
             Route::get('', 'index')->name('product');
             Route::get('create',  'create')->name('product.create');
@@ -63,6 +68,9 @@ Route::middleware('auth')->group(function () {
             Route::delete('destroy/{id}', 'destroy')->name('user.destroy');
         });
        
+        Route::resource('orders', OrderController::class);
+        Route::resource('order-details', OrderDetailController::class);
+
     });
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

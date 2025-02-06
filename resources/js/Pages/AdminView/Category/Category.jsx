@@ -37,13 +37,19 @@ function Category({ categories, filters, flash }) {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout
+            header={
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                    Category
+                </h2>
+            }
+        >
             <Head title="Category" />
             <ToastContainer />
             <div className="flex flex-wrap items-center justify-between mt-5 gap-4">
                 {/* Button: Add New category */}
                 <Link
-                    className="h-[45.6px] px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
                     href={route("category.create")}
                 >
                     Add New category

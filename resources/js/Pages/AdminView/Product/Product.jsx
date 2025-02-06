@@ -38,13 +38,15 @@ function Product({ products, filters, flash }) {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout
+            header={<h2 className="font-semibold text-xl">Products</h2>}
+        >
             <Head title="Product" />
             <ToastContainer />
             <div className="flex flex-wrap items-center justify-between mt-5 gap-4">
                 {/* Button: Add New Product */}
                 <Link
-                    className="h-[45.6px] px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
                     href={route("product.create")}
                 >
                     Add New Product
@@ -165,7 +167,7 @@ function Product({ products, filters, flash }) {
                                             Edit
                                         </Link>
                                     </td>
-                                    <td>
+                                    {/* <td>
                                         <Link
                                             href={route("product.details", {
                                                 id: product.id,
@@ -174,16 +176,16 @@ function Product({ products, filters, flash }) {
                                         >
                                             Details
                                         </Link>
-                                    </td>
+                                    </td> */}
                                     <td>
-                                        <button
+                                        <a
                                             onClick={() =>
                                                 handleDelete(product.id)
                                             }
-                                            className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
+                                            className="cursor-pointer px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                                         >
                                             Delete
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                             ))

@@ -41,11 +41,11 @@ class UserController extends Controller
     
     public function store(UserRequest $request) : RedirectResponse
     {
-        dd($request);
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+        $user->address = $request->address;
         $user->phone = $request->phone;
         $imagePath = $request->file('avatar')->store('userAvatar', 'public');
         $user->avatar = $imagePath;
@@ -71,6 +71,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->phone = $request->phone;
+        $user->address = $request->address;
 
         if($request->hasFile('avatar') && $request->avatar != null){
             $imagePath = $request->file('avatar')->store('userAvatar', 'public');
@@ -94,7 +95,7 @@ class UserController extends Controller
 
     public function details($id) {
         $user = User::where('id', $id)->first();
-        return inertia('AdminView/User/EditUser', ['user'=>$user]);
+        return inertia('AdminView/User/DetailsUser', ['user'=>$user]);
     }
 
     public function destroy($id) : RedirectResponse {
