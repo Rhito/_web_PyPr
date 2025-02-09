@@ -5,8 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 function index({ orderDetails, filters, flash }) {
-    console.log(orderDetails);
-
     // Innitialize useForm
     const {
         data,

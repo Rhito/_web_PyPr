@@ -17,7 +17,7 @@ export default function AuthenticatedLayout({ header, children }) {
         { name: "Categories", route: "category", prefix: "category" },
         { name: "Orders", route: "orders.index", prefix: "orders" },
         {
-            name: "Order Detailss",
+            name: "Order Details",
             route: "order-details.index",
             prefix: "orders-details",
         },

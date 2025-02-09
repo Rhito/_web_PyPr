@@ -6,7 +6,7 @@ use App\Http\Requests\OrderDetailsRequest;
 use App\Models\Log;
 use App\Models\Order;
 use App\Models\OrderDetail;
-use App\Models\User;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -49,9 +49,9 @@ class OrderDetailController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-        $orders = Order::all();
-        return Inertia::render('AdminView/OrderDetails/create', ['users' => $users, 'orders' => $orders]);
+        $products = Product::all();
+        $orders = Order::query()->with('user')->get();
+        return Inertia::render('AdminView/OrderDetails/create', ['products' => $products, 'orders' => $orders]);
     }
 
     /**
@@ -59,6 +59,11 @@ class OrderDetailController extends Controller
      */
     public function store(OrderDetailsRequest $request)
     {
+        $products = Product::findOrFail($request->product_id);
+        if ($products->stock < $request->quantity) {
+            return redirect()->route('order-details.create')->with(['error'=>'Product stock is not enough']);
+        }
+
         $orderDetail = new OrderDetail();
         $orderDetail->order_id = $request->order_id;
         $orderDetail->product_id = $request->product_id;
@@ -66,11 +71,14 @@ class OrderDetailController extends Controller
         $orderDetail->unit_price = $request->unit_price;
         $orderDetail->save();
 
+        $products->stock = $products->stock - $request->quantity;
+        $products->save();
+
         $log = new Log();
         $log->user_id = Auth::id();
         $log->action = 'Create order detail';
         $log->save();
-        return redirect()->route('order-details.index')->with('success', 'Order Detail created successfully');
+        return redirect()->route('order-details.index')->with(['success' => 'Order Detail created successfully']);
     }
 
     /**
@@ -78,8 +86,12 @@ class OrderDetailController extends Controller
      */
     public function show(string $id)
     {
-        $orderDetail = OrderDetail::findOrFail($id);
-        return Inertia::render('AdminView/OrderDetail/details', ['orderDetail' => $orderDetail]);
+        $orderDetail = OrderDetail::with('product', 'order')->findOrFail($id);
+
+        return Inertia::render('AdminView/OrderDetails/show', [
+            'orderDetail' => $orderDetail
+        ]);
+
     }
 
     /**
@@ -87,10 +99,10 @@ class OrderDetailController extends Controller
      */
     public function edit(string $id)
     {
-        $users = User::all();
-        $orders = Order::all();
+        $products = Product::all();
         $orderDetail = OrderDetail::findOrFail($id);
-        return Inertia::render('AdminView/OrderDetail/edit', ['orderDetail' => $orderDetail, 'users' => $users, 'orders' => $orders]);
+        $orders = Order::query()->with('user')->get();
+        return Inertia::render('AdminView/OrderDetails/edit', ['orderDetail' => $orderDetail, 'products' => $products, 'orders' => $orders]);
     }
 
     /**
@@ -98,7 +110,25 @@ class OrderDetailController extends Controller
      */
     public function update(OrderDetailsRequest $request)
     {
+        $products = Product::findOrFail($request->product_id);
+        // Check if stock is enough
+        if ($products->stock < $request->quantity) {
+            // change stock
+            $products->stock = $products->stock - $request->quantity;
+            $products->save();
+            return redirect()->route('order-details.edit')->with(['error'=>'Product stock is not enough']);
+        }
+      
+
         $orderDetail = OrderDetail::findOrFail($request->id);
+
+        // Check if quantity is decreased
+        if($request->quantity < $orderDetail->quantity){
+            // icrease stock
+            $products->stock = $products->stock + $orderDetail->quantity - $request->quantity;
+            $products->save();
+        }
+
         $orderDetail->id = $request->id;
         $orderDetail->order_id = $request->order_id;
         $orderDetail->product_id = $request->product_id;
@@ -107,6 +137,7 @@ class OrderDetailController extends Controller
         $orderDetail->updated_at = now();
         $orderDetail->save();
 
+        // give a log 
         $log = new Log();
         $log->user_id = Auth::id();
         $log->action = 'Update order detail ' . $request->id;
@@ -126,6 +157,6 @@ class OrderDetailController extends Controller
         $log->user_id = Auth::id();
         $log->action = 'Delete order detail ' . $id;
         $log->save();
-        return redirect()->route('order-details.index')->with('success', 'Order Detail deleted successfully');
+        return redirect()->route('order-details.index')->with('success', 'Order Details deleted successfully');
     }
 }

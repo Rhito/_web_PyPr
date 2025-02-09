@@ -1,13 +1,13 @@
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
 import DeleteUserForm from "./Partials/DeleteUserForm";
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm";
+import UpdateAvatarForm from "./Partials/UpdateAvatarForm";
 import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm";
 import Dropdown from "@/Components/Dropdown";
 import ApplicationLogo from "@/Components/ApplicationLogo";
-import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { useState } from "react";
+import NavLink from "@/Components/NavLink";
 
 export default function Edit({ mustVerifyEmail, status }) {
     const user = usePage().props.auth.user;
@@ -21,18 +21,27 @@ export default function Edit({ mustVerifyEmail, status }) {
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                    <ApplicationLogo className="block w-12 h-auto scale-110 fill-current text-gray-800" />
                                 </Link>
                             </div>
 
-                            {/* <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route("dashboard")}
-                                    active={route().current("dashboard")}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div> */}
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                {user.role === "admin" ? (
+                                    <NavLink
+                                        href={route("dashboard")}
+                                        active={route().current("dashboard")}
+                                    >
+                                        Dashboard
+                                    </NavLink>
+                                ) : (
+                                    <NavLink
+                                        href={route("home")}
+                                        active={route().current("home")}
+                                    >
+                                        Home
+                                    </NavLink>
+                                )}
+                            </div>
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">
@@ -167,6 +176,9 @@ export default function Edit({ mustVerifyEmail, status }) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                        <UpdateAvatarForm user={user} />
+                    </div>
                     <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}

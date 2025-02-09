@@ -74,6 +74,9 @@ class UserController extends Controller
         $user->address = $request->address;
 
         if($request->hasFile('avatar') && $request->avatar != null){
+            if($user->avatar){
+                Storage::disk('public')->delete($user->avatar);
+            }
             $imagePath = $request->file('avatar')->store('userAvatar', 'public');
             $user->avatar = $imagePath;
         }

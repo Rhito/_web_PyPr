@@ -1,5 +1,4 @@
 import { React } from "react";
-import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm } from "@inertiajs/react";
 

@@ -94,6 +94,9 @@ class ProductController extends Controller
 
         // dd($request->image_url);
         if($request->hasFile('image_url') && $request->image_url != null){
+            if($product->image_url){
+                Storage::disk('public')->delete($product->image_url);
+            }
             $imagePath = $request->file('image_url')->store('productsImages', 'public');
             $product->image_url = $imagePath;
         }
