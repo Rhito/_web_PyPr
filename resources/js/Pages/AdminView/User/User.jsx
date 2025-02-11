@@ -157,6 +157,17 @@ function User({ users, filters, flash }) {
 
                                     <td>
                                         <Link
+                                            href={route("user.details", {
+                                                id: user.id,
+                                            })}
+                                            className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded hover:bg-gray-600"
+                                        >
+                                            Details
+                                        </Link>
+                                    </td>
+
+                                    <td>
+                                        <Link
                                             href={route("user.edit", {
                                                 id: user.id,
                                             })}
@@ -167,23 +178,13 @@ function User({ users, filters, flash }) {
                                     </td>
                                     <td>
                                         <Link
-                                            href={route("user.details", {
-                                                id: user.id,
-                                            })}
-                                            className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded hover:bg-gray-600"
-                                        >
-                                            Details
-                                        </Link>
-                                    </td>
-                                    <td>
-                                        <button
                                             onClick={() =>
                                                 handleDelete(user.id)
                                             }
                                             className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                                         >
                                             Delete
-                                        </button>
+                                        </Link>
                                     </td>
                                 </tr>
                             ))

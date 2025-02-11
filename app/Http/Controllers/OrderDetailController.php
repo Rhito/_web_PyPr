@@ -59,8 +59,8 @@ class OrderDetailController extends Controller
      */
     public function store(OrderDetailsRequest $request)
     {
-        $products = Product::findOrFail($request->product_id);
-        if ($products->stock < $request->quantity) {
+        $product = Product::findOrFail($request->product_id);
+        if ($product->stock < $request->quantity) {
             return redirect()->route('order-details.create')->with(['error'=>'Product stock is not enough']);
         }
 
@@ -68,11 +68,11 @@ class OrderDetailController extends Controller
         $orderDetail->order_id = $request->order_id;
         $orderDetail->product_id = $request->product_id;
         $orderDetail->quantity = $request->quantity;
-        $orderDetail->unit_price = $request->unit_price;
+        $orderDetail->unit_price = $product->price;
         $orderDetail->save();
 
-        $products->stock = $products->stock - $request->quantity;
-        $products->save();
+        $product->stock = $product->stock - $request->quantity;
+        $product->save();
 
         $log = new Log();
         $log->user_id = Auth::id();

@@ -4,8 +4,8 @@ import { React, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
-
-function Product({ products, filters, flash }) {
+function index({ coupons, filters, flash }) {
+    // Innitialize useForm
     const {
         data,
         setData,
@@ -14,19 +14,20 @@ function Product({ products, filters, flash }) {
     } = useForm({
         search: filters?.search || "",
     });
+
     // Handle Delete ⛔
     const handleDelete = (id) => {
-        if (confirm("Are you sure you want to delete this product?")) {
-            destroy(route("product.destroy", id));
+        if (confirm("Are you sure you want to delete this coupon?")) {
+            destroy(route("coupon.destroy", id));
         }
     };
 
     // Notification
     useEffect(() => {
-        if (flash.message.success) {
+        if (flash?.message?.success) {
             toast.success(flash.message.success);
         }
-        if (flash.message.error) {
+        if (flash?.message?.error) {
             toast.error(flash.message.error);
         }
     }, [flash]);
@@ -34,22 +35,25 @@ function Product({ products, filters, flash }) {
     // Handle Search 🔍
     const handleSearch = (e) => {
         e.preventDefault();
-        get(route("product"), { preserveState: true });
+        get(route("coupon.index"), { preserveState: true });
     };
-
     return (
         <AuthenticatedLayout
-            header={<h2 className="font-semibold text-xl">Products</h2>}
+            header={
+                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                    Coupons
+                </h2>
+            }
         >
-            <Head title="Product" />
+            <Head title="Coupon" />
             <ToastContainer />
             <div className="flex flex-wrap items-center justify-between mt-5 gap-4">
-                {/* Button: Add New Product */}
+                {/* Button: Add New Coupon */}
                 <Link
                     className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
-                    href={route("product.create")}
+                    href={route("coupon.create")}
                 >
-                    Add New Product
+                    Add New Coupon
                 </Link>
 
                 {/* Search Input + Button */}
@@ -59,7 +63,7 @@ function Product({ products, filters, flash }) {
                 >
                     <input
                         type="text"
-                        placeholder="Search by ID or Name"
+                        placeholder="Search by ID, Discount and Code"
                         value={data.search}
                         onChange={(e) => setData("search", e.target.value)}
                         className="w-full sm:w-[250px] border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
@@ -73,93 +77,52 @@ function Product({ products, filters, flash }) {
                 </form>
             </div>
 
-            {/* Table Products */}
+            {/* Table Coupon */}
             <div className="mt-4 p-3 border sm:rounded-lg">
                 <table className="w-full border border-gray-300 rounded-lg overflow-hidden group:">
                     <thead>
                         <tr className="text-center border h-11">
                             <th width="5%">#</th>
-                            <th>Id</th>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-
-                            <th>Category Id</th>
-                            <th>Image_url</th>
-                            {/* <th>Description</th> */}
-                            {/* <th>Created_at</th>
-                            <th>Updated_at</th> */}
-                            <th>Status</th>
-                            <th width="5%">Edit</th>
+                            <th>ID</th>
+                            <th>Code</th>
+                            <th>Discount</th>
+                            <th>Usega Limit</th>
+                            <th>Expiration Date</th>
                             <th width="5%">Details</th>
+                            <th width="5%">Edit</th>
                             <th width="5%">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {products.data.length > 0 ? (
-                            products.data.map((product, index) => (
+                        {coupons.data.length > 0 ? (
+                            coupons.data.map((coupon, index) => (
                                 <tr
-                                    key={product.id}
-                                    className="odd:bg-white even:bg-gray-50 text-center h-12 border-b hover:bg-gray-100 transition"
+                                    key={coupon.id}
+                                    className="odd:bg-white even:bg-gray-50 text-center h-12 borderD-b hover:bg-gray-100 transition"
                                 >
                                     <td className="p-3">{index + 1}</td>
-                                    <td>{product.id}</td>
-                                    <td className="font-medium">
-                                        {product.name}
+                                    <td className="p-3">{coupon.id}</td>
+                                    <td className="p-3">{coupon.code}</td>
+                                    <td className="p-3">{coupon.discount}</td>
+                                    <td className="p-3">
+                                        {coupon.usage_limit}
                                     </td>
-                                    <td className="font-medium">
-                                        {product.price}
-                                    </td>
-                                    <td className="font-medium">
-                                        {product.stock}
-                                    </td>
-                                    <td>{product.category?.name ?? "N/A"}</td>
-                                    <td className="max-w-[150px] truncate p-3">
-                                        {product?.image_url ? (
-                                            <img
-                                                src={`storage/${product.image_url}`}
-                                                alt="Product Image"
-                                                className="w-20 h-auto rounded shadow"
-                                                loading="lazy"
-                                            />
-                                        ) : (
-                                            "No Image"
+                                    <td>
+                                        {new Intl.DateTimeFormat("en-UK", {
+                                            year: "numeric",
+                                            month: "numeric",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        }).format(
+                                            new Date(coupon.expiration_date)
                                         )}
                                     </td>
-                                    {/* <td className="max-w-[250px] truncate">
-                                        {product.description}
-                                    </td>
-                                    <td>
-                                        {new Intl.DateTimeFormat("en-UK", {
-                                            year: "numeric",
-                                            month: "numeric",
-                                            day: "numeric",
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        }).format(new Date(product.created_at))}
-                                    </td>
-                                    <td>
-                                        {new Intl.DateTimeFormat("en-UK", {
-                                            year: "numeric",
-                                            month: "numeric",
-                                            day: "numeric",
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        }).format(new Date(product.updated_at))}
-                                    </td> */}
-                                    <td
-                                        className={`font-bold ${
-                                            product.isActive === "active"
-                                                ? "text-green-600"
-                                                : "text-gray-400"
-                                        }`}
-                                    >
-                                        {product.isActive}
-                                    </td>
+
                                     <td>
                                         <Link
-                                            href={route("product.details", {
-                                                id: product.id,
+                                            href={route("coupon.show", {
+                                                id: coupon.id,
                                             })}
                                             className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded hover:bg-gray-600"
                                         >
@@ -168,18 +131,19 @@ function Product({ products, filters, flash }) {
                                     </td>
                                     <td>
                                         <Link
-                                            href={route("product.edit", {
-                                                id: product.id,
+                                            href={route("coupon.edit", {
+                                                id: coupon.id,
                                             })}
-                                            className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
+                                            className="w-full px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
                                         >
                                             Edit
                                         </Link>
                                     </td>
+
                                     <td>
                                         <a
                                             onClick={() =>
-                                                handleDelete(product.id)
+                                                handleDelete(coupon.id)
                                             }
                                             className="cursor-pointer px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                                         >
@@ -191,7 +155,7 @@ function Product({ products, filters, flash }) {
                         ) : (
                             <tr>
                                 <td colSpan="12" className="text-center py-4">
-                                    No products found.
+                                    No coupon found.
                                 </td>
                             </tr>
                         )}
@@ -200,12 +164,12 @@ function Product({ products, filters, flash }) {
             </div>
             <nav className="text-center mt-2">
                 <ul className="flex items-center justify-center space-x-2">
-                    {products.links.map((link, index) => {
+                    {coupons.links.map((link, index) => {
                         let label = link.label;
                         if (index === 0) {
                             label = "Previous";
                         }
-                        if (index === products.links.length - 1) {
+                        if (index === coupons.links.length - 1) {
                             label = "Next";
                         }
                         return (
@@ -236,4 +200,4 @@ function Product({ products, filters, flash }) {
     );
 }
 
-export default Product;
+export default index;

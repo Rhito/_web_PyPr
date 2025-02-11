@@ -10,7 +10,6 @@ function create({ orders, products, flash }) {
         order_id: "",
         product_id: "",
         quantity: "",
-        unit_price: "",
     });
 
     // handle form submission
@@ -132,24 +131,6 @@ function create({ orders, products, flash }) {
                         className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     />
                     <InputError message={errors.quantity} name="quantity" />
-                </div>
-                {/* Unit Price */}
-                <div className="mb-4">
-                    <label
-                        htmlFor="unit_price"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                        Unit Price
-                    </label>
-                    <input
-                        type="number"
-                        name="unit_price"
-                        id="unit_price"
-                        value={data.unit_price}
-                        onChange={(e) => setData("unit_price", e.target.value)}
-                        className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    />
-                    <InputError message={errors.unit_price} name="unit_price" />
                 </div>
 
                 {/* Submit button */}

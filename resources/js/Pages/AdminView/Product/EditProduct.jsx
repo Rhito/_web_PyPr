@@ -4,8 +4,6 @@ import { Textarea } from "@headlessui/react";
 import { Head, useForm } from "@inertiajs/react";
 import { React } from "react";
 function CreateProduct({ product, categoriesName }) {
-    console.log(product.image_url);
-
     const { data, setData, post, processing, errors, reset } = useForm({
         id: product.id,
         name: product.name,

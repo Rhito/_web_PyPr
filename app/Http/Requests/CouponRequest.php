@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrderDetailsRequest extends FormRequest
+class CouponRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,12 +19,14 @@ class OrderDetailsRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    // 	id code discount expiration_date usage_limit
     public function rules(): array
     {
         return [
-            'order_id' => ['required', 'integer'],
-            'product_id' => ['required', 'integer'],
-            'quantity' => ['required', 'integer'],
+            'code' => ['required', 'string', 'max:255'],
+            'discount' => ['required', 'numeric'],
+            'expiration_date' => ['nullable', 'date'],
+            'usage_limit' => ['nullable', 'numeric'],
         ];
     }
 }
