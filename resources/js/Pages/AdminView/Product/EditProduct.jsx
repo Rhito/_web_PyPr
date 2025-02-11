@@ -69,44 +69,38 @@ function CreateProduct({ product, categoriesName }) {
                     >
                         Image
                     </label>
-                    <div className="flex items-center  gap-4">
-                        {/* Input file */}
+                    <div className="relative group flex">
                         <input
                             type="file"
                             id="image_url"
+                            accept="image/*"
                             onChange={(e) =>
                                 setData("image_url", e.target.files[0])
                             }
-                            className="block text-sm text-gray-500 
-                            file:mr-4 file:py-2 file:px-4 
-                            file:rounded-full file:border-0 
-                            w-[50%]
-                            file:text-sm file:font-semibold 
-                            file:bg-indigo-100 file:text-indigo-700
-                            hover:file:bg-indigo-200 file:focus:border-gray-500"
+                            className="block w-[50%] text-sm text-gray-500 file:py-2 file:px-4 file:rounded-lg file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200"
                         />
-
-                        {/* Hiển thị ảnh */}
-                        <div className="w-20 h-20 border rounded overflow-hidden shadow-sm">
-                            {product?.image_url ? (
+                        {data.image_url ? (
+                            <img
+                                src={URL.createObjectURL(data.image_url)}
+                                alt="Preview"
+                                className="w-20 h-20 object-cover rounded-lg mb-2"
+                            />
+                        ) : (
+                            product.image_url && (
                                 <img
                                     src={`../../storage/${product.image_url}`}
-                                    alt="Product Image"
-                                    className="w-full h-full object-cover"
-                                    loading="lazy"
+                                    alt="Current image_url"
+                                    className="w-20 h-20 object-cover rounded-full mb-2"
                                 />
-                            ) : (
-                                <p className="text-gray-400 text-xs flex items-center justify-center h-full">
-                                    No Image
-                                </p>
-                            )}
-                        </div>
+                            )
+                        )}
+
+                        {errors?.image_url && (
+                            <span className="text-sm text-red-600">
+                                {errors.image_url}
+                            </span>
+                        )}
                     </div>
-                    {errors?.image_url && (
-                        <span className="text-sm text-red-600">
-                            {errors.image_url}
-                        </span>
-                    )}
                 </div>
 
                 {/* Select category */}

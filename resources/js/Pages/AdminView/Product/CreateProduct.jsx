@@ -70,20 +70,24 @@ function CreateProduct({ categoryName }) {
                     >
                         Image
                     </label>
-                    <div className="relative group">
+                    <div className="relative group flex">
                         <input
                             type="file"
                             id="image_url"
+                            accept="image/*"
                             onChange={(e) =>
                                 setData("image_url", e.target.files[0])
                             }
-                            className="block w-full text-sm text-gray-500 
-                                file:mr-4 file:py-2 file:px-4 
-                                file:rounded-full file:border-0 
-                                file:text-sm file:font-semibold 
-                                file:bg-indigo-100 file:text-indigo-700
-                                hover:file:bg-indigo-200 file:focus:border-gray-500"
+                            className="block w-[50%] text-sm text-gray-500 file:py-2 file:px-4 file:rounded-lg file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200"
                         />
+                        {data.image_url && (
+                            <img
+                                src={URL.createObjectURL(data.image_url)}
+                                alt="Preview"
+                                className="w-20 h-20 object-cover rounded-lg mb-2"
+                            />
+                        )}
+
                         {errors?.image_url && (
                             <span className="text-sm text-red-600">
                                 {errors.image_url}

@@ -5,8 +5,6 @@ import TextInput from "@/Components/TextInput";
 import { Textarea } from "@headlessui/react";
 
 function EditCategory({ category, categories }) {
-    console.log(category);
-
     const { data, setData, post, processing, errors, reset } = useForm({
         id: category.id,
         name: category.name,

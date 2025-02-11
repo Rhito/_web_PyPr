@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\ProductController;
@@ -72,6 +73,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('orders', OrderController::class);
         Route::resource('order-details', OrderDetailController::class);
         Route::resource('coupon', CouponController::class);
+
+        Route::get('logs', [LogController::class, 'index'])->name('log.index');
 
     });
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

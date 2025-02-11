@@ -3,138 +3,91 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
-use App\Models\Category;
-use App\Models\Log;
-use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Repositories\ProductRepository;
+use App\Repositories\LogRepository;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
-    
-    public function index(Request $request){
-        $query = Product::query();
+    protected $productRepository;
+    protected $logRepository;
 
-        if ($request->has('search') && $request->search !== '') {
-            $search = $request->search;
+    public function __construct(ProductRepository $productRepository, LogRepository $logRepository)
+    {
+        $this->productRepository = $productRepository;
+        $this->logRepository = $logRepository;
+    }
 
-            // Check if search input is numeric (assumed to be ID), otherwise search by name
-            if (is_numeric($search)) {
-                $query->where('id', $search);
-            } else {
-                $query->where('name', 'like', '%' . $search . '%');
-            }
-        }
-
-        $products = $query->with('category')->orderBy('id', 'desc')->paginate(10);
+    public function index(Request $request): Response
+    {
+        $products = $this->productRepository->getAllProducts($request->search);
 
         return Inertia::render('AdminView/Product/Product', [
             'products' => $products,
-            'filters' => $request->only(['search']), // Preserve filter value
+            'filters' => $request->only(['search']),
         ]);
     }
-
 
     public function create(): Response
     {
-        $categoryName = Category::all();
-        return Inertia::render('AdminView/Product/CreateProduct', ['categoryName'=> fn () =>$categoryName]);
+        $categories = $this->productRepository->getAllCategories();
+        return Inertia::render('AdminView/Product/CreateProduct', [
+            'categoryName' => $categories,
+        ]);
     }
 
-    public function store(ProductRequest $request) : RedirectResponse
-    {  
-       
-        $products = new Product();
-        $products->name = $request->name;
-        $products->category_id = $request->category_id;
-        $imagePath = $request->file('image_url')->store('productsImages', 'public');
-        $products->image_url = $imagePath;
-        $products->price = $request->price;
-        $products->stock = $request->stock;
-        $products->category_id = $request->category_id;
-        $products->description = $request->description;
-        $products->isActive = $request->isActive;
-        $products->save();
-
-        $log = new Log();
-        $log->user_id = Auth::id();
-        $log->action = "Created product";
-        $log->save();
-       // Redirect back with a success message
-       return redirect()->route('product')->with(['success'=> 'Product created successfully!']);
-    }
-
-    public function edit($id) {
-        $product = Product::findOrFail($id);
-        $categoriesName = Category::all();
-        return inertia('AdminView/Product/EditProduct', ["product"=> $product, "categoriesName" => $categoriesName] );
-    }
-
-    public function update(Request $request ) : RedirectResponse 
+    public function store(ProductRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'min:0','max:255'],
+        $product = $this->productRepository->createProduct($request->validated());
+        $this->logRepository->createLog("Created product", $product->id);
+
+        return redirect()->route('product')->with(['success' => 'Product created successfully']);
+    }
+
+    public function edit($id): Response
+    {
+        $product = $this->productRepository->findProductById($id);
+        $categories = $this->productRepository->getAllCategories();
+        return Inertia::render('AdminView/Product/EditProduct', ['product' => $product, 'categoriesName'=>$categories]);
+    }
+
+    public function update(Request $request): RedirectResponse
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
             'category_id' => ['required'],
             'image_url' => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif', 'max:2048'],
-            'stock' => ['required','min:0'],
-            'price' => ['required','min:0'],
-            'price' => ['required','numeric','min:0'],
-            'stock' => ['required','integer','min:0'],
-            'description' => ['nullable','string'],
+            'stock' => ['required', 'integer', 'min:0'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'description' => ['nullable', 'string'],
             'isActive' => ['required'],
         ]);
-      
-        $product = Product::where('id', $request->id)->first();
-        $product->name = $request->name;
-        $product->category_id = $request->category_id;
 
-        // dd($request->image_url);
-        if($request->hasFile('image_url') && $request->image_url != null){
-            if($product->image_url){
-                Storage::disk('public')->delete($product->image_url);
-            }
-            $imagePath = $request->file('image_url')->store('productsImages', 'public');
-            $product->image_url = $imagePath;
-        }
+        // Update the product using the repository
+        $this->productRepository->updateProduct($request->id, $validatedData);
 
-        $product->price = $request->price;
-        $product->stock = $request->stock;
-        $product->category_id = $request->category_id;
-        $product->description = $request->description;
-        $product->isActive = $request->isActive;
-        $product->updated_at = now();
+        // Log the update action
+        $this->logRepository->createLog("Updated product - Id: " . $request->id, $request->id);
 
-        $product->update();
-
-        $log = new Log();
-        $log->user_id = Auth::id();
-        $log->action = "Update product - Id: ". $request->id;
-        $log->save();
-        
-        return redirect('products')->with(['success' => 'Product edit successfully']);
+        // Redirect with a success message
+        return redirect()->route('product')->with(['success'=>'Product updated successfully']);
     }
 
-    public function details($id) {
-        //$product = Product::findOrFail($id);
-        $product = Product::where('id', $id)->first();
-        return inertia('AdminView/Product/DetailsProduct', ['product'=>$product]);
+    public function details($id): Response
+    {
+        $product = $this->productRepository->findProductById($id);
+        return Inertia::render('AdminView/Product/DetailsProduct', ['product' => $product]);
     }
 
-    public function destroy($id) : RedirectResponse {
-        $product = Product::where('id', $id)->first();
-        if($product->image_url){
-            Storage::disk('public')->delete($product->image_url);
-        }
-        $product->delete();
+    public function destroy($id): RedirectResponse
+    {
+        $this->productRepository->deleteProduct($id);
+        $this->logRepository->createLog("Deleted product - Id: " . $id, $id);
 
-        $log = new Log();
-        $log->user_id = Auth::id();
-        $log->action = "Delete product - Id: ". $id;
-        $log->save();
-        return redirect('products')->with(['success'=>'Product deleted successfully']);
+        return redirect()->route('product')->with(['success' => 'Product deleted successfully']);
     }
 }

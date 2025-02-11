@@ -119,7 +119,7 @@ function Product({ products, filters, flash }) {
                                             <img
                                                 src={`storage/${product.image_url}`}
                                                 alt="Product Image"
-                                                className="w-20 h-auto rounded shadow"
+                                                className="w-20 h-auto m-auto rounded shadow"
                                                 loading="lazy"
                                             />
                                         ) : (

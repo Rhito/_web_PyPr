@@ -83,7 +83,7 @@ function SideBar({ navItems }) {
                     </ul>
 
                     <Link
-                        // href={route("log")}
+                        href={route("log.index")}
                         className={`flex items-center px-4 py-2 hover:bg-gray-700 w-full`}
                     >
                         <FontAwesomeIcon icon={faFile} className="me-2" />

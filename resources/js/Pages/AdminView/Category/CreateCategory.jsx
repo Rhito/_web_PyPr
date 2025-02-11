@@ -4,7 +4,7 @@ import { Head, useForm } from "@inertiajs/react";
 import TextInput from "@/Components/TextInput";
 import { Textarea } from "@headlessui/react";
 
-function CreateCategory({ category }) {
+function CreateCategory({ categories }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         description: "",
@@ -99,8 +99,8 @@ function CreateCategory({ category }) {
                             Select a category
                         </option>
                         {/* render option list */}
-                        {category &&
-                            category.map((cate) => (
+                        {categories &&
+                            categories?.map((cate) => (
                                 <option
                                     key={cate.id}
                                     value={cate.id}
