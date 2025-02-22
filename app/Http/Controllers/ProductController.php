@@ -42,7 +42,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request): RedirectResponse
     {
         $product = $this->productRepository->createProduct($request->validated());
-        $this->logRepository->createLog("Created product", $product->id);
+        $this->logRepository->createLog("Created product id: ". $product->id, $product->id);
 
         return redirect()->route('product')->with(['success' => 'Product created successfully']);
     }

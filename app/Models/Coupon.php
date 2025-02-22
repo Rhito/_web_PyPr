@@ -37,4 +37,6 @@ class Coupon extends Model
     {
         return $this->expiration_date >= now() && $this->usage_limit > 0;
     }
+
+    
 }

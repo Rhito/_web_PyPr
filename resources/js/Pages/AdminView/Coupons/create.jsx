@@ -15,7 +15,6 @@ function create() {
     // handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(data);
 
         post(route("coupon.store"), {
             onSuccess: () => {

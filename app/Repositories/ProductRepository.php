@@ -59,6 +59,7 @@ class ProductRepository
             $data['image_url'] = $product->image_url;
         }
 
+        $product->updated_at = now();
         $product->update($data);
     }
 

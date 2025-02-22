@@ -40,6 +40,7 @@ class CategoryRepository
     public function updateCategory($id, $data)
     {
         $category = Category::findOrFail($id);
+        $category->updated_at = now();
         $category->update($data);
         return $category;
     }

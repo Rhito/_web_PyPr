@@ -17,6 +17,8 @@ function EditUser({ user }) {
     });
 
     const handleSubmit = (e) => {
+        console.log(data);
+
         e.preventDefault();
 
         post(route("user.update"), data, {

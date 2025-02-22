@@ -42,7 +42,7 @@ function SideBar({ navItems }) {
                         className="flex items-center px-4 py-2 hover:bg-gray-700 w-full"
                     >
                         <FontAwesomeIcon icon={faHouse} className="me-2" />
-                        <span className="hidden lg:block">Dashboard</span>
+                        <span className="lg:text-lg md:text-md">Dashboard</span>
                     </Link>
 
                     <button
@@ -50,7 +50,7 @@ function SideBar({ navItems }) {
                         className="flex items-center px-4 py-2 hover:bg-gray-700 w-full transition duration-300"
                     >
                         <FontAwesomeIcon icon={faBars} className="me-2" />
-                        <span className="hidden lg:block">CRUD</span>
+                        <span className="lg:text-lg md:text-md">CRUD</span>
                         <FontAwesomeIcon
                             icon={faChevronDown}
                             className={`ms-auto transition-transform duration-300 ${
@@ -87,7 +87,7 @@ function SideBar({ navItems }) {
                         className={`flex items-center px-4 py-2 hover:bg-gray-700 w-full`}
                     >
                         <FontAwesomeIcon icon={faFile} className="me-2" />
-                        <span className="hidden lg:block">Log</span>
+                        <span className="lg:text-lg md:text-md">Log</span>
                     </Link>
                 </nav>
             </div>

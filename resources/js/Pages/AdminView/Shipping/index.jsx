@@ -4,7 +4,7 @@ import { React, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
-function index({ orderDetails, filters, flash }) {
+function index({ shipping, filters, flash }) {
     // Innitialize useForm
     const {
         data,
@@ -15,10 +15,24 @@ function index({ orderDetails, filters, flash }) {
         search: filters?.search || "",
     });
 
+    // Select the color of the status 'pending', 'shipped', 'delivered'
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "shipped":
+                return "text-green-600";
+            case "pending":
+                return "text-yellow-600";
+            case "delivered":
+                return "text-blue-600";
+            default:
+                return "text-gray-600"; // default color
+        }
+    };
+
     // Handle Delete ⛔
     const handleDelete = (id) => {
-        if (confirm("Are you sure you want to delete this order details?")) {
-            destroy(route("order-details.destroy", id));
+        if (confirm("Are you sure you want to delete this shipping?")) {
+            destroy(route("shipping.destroy", id));
         }
     };
 
@@ -35,25 +49,25 @@ function index({ orderDetails, filters, flash }) {
     // Handle Search 🔍
     const handleSearch = (e) => {
         e.preventDefault();
-        get(route("order-details.index"), { preserveState: true });
+        get(route("shipping.index"), { preserveState: true });
     };
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Order Details
+                    Shipping
                 </h2>
             }
         >
-            <Head title="Order Details" />
+            <Head title="Shipping" />
             <ToastContainer />
             <div className="flex flex-wrap items-center justify-between mt-5 gap-4">
-                {/* Button: Add New order Details */}
+                {/* Button: Add New Shipping */}
                 <Link
                     className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition"
-                    href={route("order-details.create")}
+                    href={route("shipping.create")}
                 >
-                    Add New Order Details
+                    Add New Shipping
                 </Link>
 
                 {/* Search Input + Button */}
@@ -63,7 +77,7 @@ function index({ orderDetails, filters, flash }) {
                 >
                     <input
                         type="text"
-                        placeholder="Search by ID, Order ID and Product ID"
+                        placeholder="Search..."
                         value={data.search}
                         onChange={(e) => setData("search", e.target.value)}
                         className="w-full sm:w-[250px] border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
@@ -76,7 +90,7 @@ function index({ orderDetails, filters, flash }) {
                     </button>
                 </form>
             </div>
-            {/* Table Order Details */}
+            {/* Table shipping */}
             <div className="mt-4 p-3 border sm:rounded-lg">
                 <table className="w-full border border-gray-300 rounded-lg overflow-hidden group:">
                     <thead>
@@ -84,38 +98,58 @@ function index({ orderDetails, filters, flash }) {
                             <th width="5%">#</th>
                             <th>Id</th>
                             <th>Order Id</th>
-                            <th>Product Id</th>
-                            <th>Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Total Amount</th>
-                            {/* <th>Created_at</th>
-                            <th>Updated_at</th> */}
+                            <th>Shipping Address</th>
+                            <th>Shipping Status</th>
+                            <th>Shipping Date</th>
+                            <th>Contact Phone</th>
                             <th width="5%">Details</th>
                             <th width="5%">Edit</th>
                             <th width="5%">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {orderDetails.data.length > 0 ? (
-                            orderDetails.data.map((orderD, index) => (
+                        {shipping.data.length > 0 ? (
+                            shipping.data.map((shipping, index) => (
                                 <tr
-                                    key={orderD.id}
+                                    key={shipping.id}
                                     className="odd:bg-white even:bg-gray-50 text-center h-12 borderD-b hover:bg-gray-100 transition"
                                 >
                                     <td className="p-3">{index + 1}</td>
-                                    <td className="p-3">{orderD.id}</td>
-                                    <td className="p-3">{orderD.order_id}</td>
-                                    <td className="p-3">{orderD.product_id}</td>
-                                    <td className="p-3">{orderD.quantity}</td>
-                                    <td className="p-3">{orderD.unit_price}</td>
-                                    <td className="font-medium">
-                                        {orderD.total_pay}
+                                    <td className="p-3">{shipping.id}</td>
+                                    <td className="p-3">
+                                        {shipping.order_id +
+                                            " - " +
+                                            shipping.order.status}
+                                    </td>
+                                    <td className="p-3">
+                                        {shipping.shipping_address}
+                                    </td>
+                                    <td
+                                        className={`p3 ${getStatusColor(
+                                            shipping.shipping_status
+                                        )}`}
+                                    >
+                                        {shipping.shipping_status}
+                                    </td>
+                                    <td className={`p3`}>
+                                        {shipping.contact_phone}
                                     </td>
 
+                                    <td className="p-3">
+                                        {new Intl.DateTimeFormat("en-UK", {
+                                            year: "numeric",
+                                            month: "numeric",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        }).format(
+                                            new Date(shipping.shipping_date)
+                                        )}
+                                    </td>
                                     <td>
                                         <Link
-                                            href={route("order-details.show", {
-                                                id: orderD.id,
+                                            href={route("shipping.show", {
+                                                id: shipping.id,
                                             })}
                                             className="px-3 py-1 text-sm font-medium text-white bg-gray-500 rounded hover:bg-gray-600"
                                         >
@@ -124,8 +158,8 @@ function index({ orderDetails, filters, flash }) {
                                     </td>
                                     <td>
                                         <Link
-                                            href={route("order-details.edit", {
-                                                id: orderD.id,
+                                            href={route("shipping.edit", {
+                                                id: shipping.id,
                                             })}
                                             className="w-full px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded hover:bg-blue-600"
                                         >
@@ -136,7 +170,7 @@ function index({ orderDetails, filters, flash }) {
                                     <td>
                                         <a
                                             onClick={() =>
-                                                handleDelete(orderD.id)
+                                                handleDelete(shipping.id)
                                             }
                                             className="cursor-pointer px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                                         >
@@ -148,7 +182,7 @@ function index({ orderDetails, filters, flash }) {
                         ) : (
                             <tr>
                                 <td colSpan="12" className="text-center py-4">
-                                    No order details found.
+                                    No order shipping found.
                                 </td>
                             </tr>
                         )}
@@ -158,12 +192,12 @@ function index({ orderDetails, filters, flash }) {
             {/* pagination */}
             <nav className="text-center mt-2">
                 <ul className="flex items-center justify-center space-x-2">
-                    {orderDetails.links.map((link, index) => {
+                    {shipping.links.map((link, index) => {
                         let label = link.label;
                         if (index === 0) {
                             label = "Previous";
                         }
-                        if (index === orderDetails.links.length - 1) {
+                        if (index === shipping.links.length - 1) {
                             label = "Next";
                         }
                         return (

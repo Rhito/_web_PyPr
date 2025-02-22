@@ -34,6 +34,8 @@ class OrderRepository
     public function updateOrder($id, $data)
     {
         $order = Order::findOrFail($id);
+
+        $order->updated_at = now();
         $order->update($data);
         return $order;
     }

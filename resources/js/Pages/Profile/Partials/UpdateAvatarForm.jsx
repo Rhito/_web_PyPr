@@ -70,12 +70,17 @@ function UpdateAvatarForm({ user }) {
                         alt="Avatar"
                         className="w-24 h-24 rounded-full border"
                     />
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="border p-2 w-2/4"
-                    />
+                    <div className="relative inline-block">
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer pointer-events-none"
+                        />
+                        <label className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md cursor-pointer transition-all duration-300 ease-in-out pointer-events-auto">
+                            📂 Upload Image
+                        </label>
+                    </div>
                 </div>
                 <p className="text-xs text-gray-400 mt-2">
                     PNG, JPG SVG, WEBP, and GIF are Allowed.

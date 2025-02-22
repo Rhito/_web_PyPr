@@ -83,12 +83,8 @@ function Product({ products, filters, flash }) {
                             <th>Name</th>
                             <th>Price</th>
                             <th>Stock</th>
-
                             <th>Category Id</th>
                             <th>Image_url</th>
-                            {/* <th>Description</th> */}
-                            {/* <th>Created_at</th>
-                            <th>Updated_at</th> */}
                             <th>Status</th>
                             <th width="5%">Edit</th>
                             <th width="5%">Details</th>
@@ -126,27 +122,6 @@ function Product({ products, filters, flash }) {
                                             "No Image"
                                         )}
                                     </td>
-                                    {/* <td className="max-w-[250px] truncate">
-                                        {product.description}
-                                    </td>
-                                    <td>
-                                        {new Intl.DateTimeFormat("en-UK", {
-                                            year: "numeric",
-                                            month: "numeric",
-                                            day: "numeric",
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        }).format(new Date(product.created_at))}
-                                    </td>
-                                    <td>
-                                        {new Intl.DateTimeFormat("en-UK", {
-                                            year: "numeric",
-                                            month: "numeric",
-                                            day: "numeric",
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        }).format(new Date(product.updated_at))}
-                                    </td> */}
                                     <td
                                         className={`font-bold ${
                                             product.isActive === "active"

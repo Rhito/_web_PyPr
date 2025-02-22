@@ -2,10 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Models\Coupon;
 use App\Models\Log;
+use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+
 
 class OrderDetailRepository
 {
@@ -29,32 +32,79 @@ class OrderDetailRepository
         return OrderDetail::with('product', 'order')->findOrFail($id);
     }
 
+    public function getProductNameAndPrice(){
+        return Product::select('id','name', 'price')->get();
+    }
+
+    public function getOrderStatus(){
+        return Order::select('id','status')->get();
+    }
+
+    public function getCouponValid(){
+
+        $allCoupons = Coupon::all();
+        $validCoupons = [];
+
+        foreach ($allCoupons as $coupon) {
+            if ($coupon->isValid()) {
+                $validCoupons[] = $coupon;
+            }
+        }
+        return $validCoupons;
+    }
+
+
     public function create($data)
     {
-        $product = Product::findOrFail($data['product_id']);
+        $product = Product::find($data['product_id']);
+        $coupon = Coupon::find($data['coupon_id']);
+
+        if (!$product) {
+            return ['error' => 'Product not found'];
+        }
+
+        if (!$coupon || !$coupon->isValid()) {
+            return ['error' => 'Coupon is not valid or expired'];
+        }
 
         if ($product->stock < $data['quantity']) {
             return ['error' => 'Product stock is not enough'];
         }
 
+        $subtotal = $product->price * $data['quantity'];
+        $total_pay = max(0, $subtotal - $coupon->discount); 
+
+        
         $orderDetail = OrderDetail::create([
             'order_id' => $data['order_id'],
             'product_id' => $data['product_id'],
             'quantity' => $data['quantity'],
-            'unit_price' => $product->price
+            'unit_price' => $product->price,
+            'coupon_id' => $data['coupon_id'],
+            'total_pay' => $total_pay,
         ]);
 
         $product->decrement('stock', $data['quantity']);
-        $this->logAction('Create order detail', $orderDetail->id);
+        if ($coupon->usage_limit > 0) {
+            $coupon->decrement('usage_limit', 1);
+        }
 
+        $this->logAction('Created order detail Id: '.$orderDetail->id, $orderDetail->id);
         return $orderDetail;
     }
+
 
     public function update($id, $data)
     {
         $orderDetail = OrderDetail::findOrFail($id);
-        $product = Product::findOrFail($data['product_id']);
-
+        $product = Product::find($data['product_id']);
+        $newCoupon = Coupon::find($data['coupon_id']);
+        $oldCoupon = Coupon::find($orderDetail->coupon_id);
+    
+        if (!$newCoupon || !$newCoupon->isValid()) {
+            return ['error' => 'New coupon is not valid or expired'];
+        }
+    
         if ($data['quantity'] > $orderDetail->quantity) {
             $neededStock = $data['quantity'] - $orderDetail->quantity;
             if ($product->stock < $neededStock) {
@@ -65,24 +115,39 @@ class OrderDetailRepository
             $product->increment('stock', $orderDetail->quantity - $data['quantity']);
         }
 
+        $subtotal = $product->price * $data['quantity'];
+        $total_pay = max(0, $subtotal - $newCoupon->discount);  
+    
+        $orderDetail->updated_at = now();
         $orderDetail->update([
             'order_id' => $data['order_id'],
             'product_id' => $data['product_id'],
             'quantity' => $data['quantity'],
-            'unit_price' => $product->price
+            'unit_price' => $product->price,
+            'coupon_id' => $data['coupon_id'],
+            'total_pay' => $total_pay,
         ]);
-
-        $this->logAction('Update order detail', $orderDetail->id);
-
+    
+        if ($oldCoupon && $oldCoupon->id !== $newCoupon->id) {
+            $oldCoupon->increment('usage_limit', 1);
+        }
+    
+        if ($newCoupon->usage_limit > 0) {
+            $newCoupon->decrement('usage_limit', 1);
+        }
+    
+        $this->logAction('Update order detail id: ' . $orderDetail->id, $orderDetail->id);
+    
         return $orderDetail;
     }
+    
 
     public function delete($id)
     {
         $orderDetail = OrderDetail::findOrFail($id);
         $orderDetail->delete();
 
-        $this->logAction('Delete order detail', $id);
+        $this->logAction('Delete order detailid: ' .$id, $id);
         return true;
     }
 

@@ -61,7 +61,7 @@ function User({ users, filters, flash }) {
                 >
                     <input
                         type="text"
-                        placeholder="Search by ID or Name"
+                        placeholder="Search ..."
                         value={data.search}
                         onChange={(e) => setData("search", e.target.value)}
                         className="w-full sm:w-[250px] border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
@@ -177,21 +177,21 @@ function User({ users, filters, flash }) {
                                         </Link>
                                     </td>
                                     <td>
-                                        <Link
+                                        <a
                                             onClick={() =>
                                                 handleDelete(user.id)
                                             }
-                                            className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
+                                            className="cursor-pointer px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                                         >
                                             Delete
-                                        </Link>
+                                        </a>
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
                                 <td colSpan="12" className="text-center py-4">
-                                    No categorys found.
+                                    No user found.
                                 </td>
                             </tr>
                         )}

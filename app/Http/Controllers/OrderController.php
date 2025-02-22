@@ -41,8 +41,8 @@ class OrderController extends Controller
 
     public function store(OrderRequest $request)
     {
-        $this->orderRepository->createOrder($request->only(['user_id', 'total_amount', 'status']));
-        $this->logRepository->createLog("Created Order", $request->id);
+        $order = $this->orderRepository->createOrder($request->only(['user_id', 'total_amount', 'status']));
+        $this->logRepository->createLog("Created Order Id: ".$order->id, $order->id);
         
         return redirect()->route('orders.index')->with('success', 'Order created successfully');
     }
@@ -56,16 +56,18 @@ class OrderController extends Controller
 
     public function update(OrderRequest $request)
     {
-        $this->orderRepository->updateOrder($request->id, $request->only(['user_id', 'total_amount', 'status']));
+        $order = $this->orderRepository->updateOrder($request->id, $request->only(['user_id', 'total_amount', 'status']));
 
-        $this->logRepository->createLog("Updated Order - Id: ". $request->id  , $request->id);
+        $this->logRepository->createLog("Created Order Id: ".$order->id, $order->id);
 
         return redirect()->route('orders.index')->with('success', 'Order updated successfully');
     }
 
     public function destroy(string $id)
     {
-        $this->orderRepository->deleteOrder($id);
+        
+        $result = $this->orderRepository->deleteOrder($id);
+        dd($result);
 
         $this->logRepository->createLog("Deleted Order - Id: " . $id, $id);
 

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderDetailsRequest;
 use App\Repositories\OrderDetailRepository;
-use App\Models\Product;
-use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -29,15 +27,20 @@ class OrderDetailController extends Controller
 
     public function create()
     {
+        $products = $this->orderDetailRepository->getProductNameAndPrice();
+        $orders = $this->orderDetailRepository->getOrderStatus();
+        $validCoupons = $this->orderDetailRepository->getCouponValid();
+
         return Inertia::render('AdminView/OrderDetails/create', [
-            'products' => Product::all(),
-            'orders' => Order::with('user')->get(),
+            'products' => $products,
+            'orders' => $orders,
+            'coupons' => $validCoupons,
         ]);
     }
 
     public function store(OrderDetailsRequest $request)
     {
-        $result = $this->orderDetailRepository->create($request->validated());
+        $result = $this->orderDetailRepository->create($request);
         if (isset($result['error'])) {
             return redirect()->back()->withInput()->withErrors(['error' => $result['error']]);
         }
@@ -54,10 +57,15 @@ class OrderDetailController extends Controller
 
     public function edit($id)
     {
+        $products = $this->orderDetailRepository->getProductNameAndPrice();
+        $orders = $this->orderDetailRepository->getOrderStatus();
+        $validCoupons = $this->orderDetailRepository->getCouponValid();
+
         return Inertia::render('AdminView/OrderDetails/edit', [
             'orderDetail' => $this->orderDetailRepository->findById($id),
-            'products' => Product::all(),
-            'orders' => Order::with('user')->get(),
+            'products' => $products,
+            'orders' => $orders,
+            'coupons' => $validCoupons,
         ]);
     }
 

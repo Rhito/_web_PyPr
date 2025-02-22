@@ -16,7 +16,6 @@ function edit({ coupon }) {
     // handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(data);
 
         put(route("coupon.update", { coupon: data }), {
             onSuccess: () => {

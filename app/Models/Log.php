@@ -24,6 +24,7 @@ class Log extends Model
     protected $fillable = [
         'user_id',
         'action',
+        'target_id',
         'timestamp',
     ];
 

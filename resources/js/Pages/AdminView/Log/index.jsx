@@ -1,17 +1,11 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-import { React, useEffect } from "react";
+import { React } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from "react-toastify";
 function index({ logs, filters }) {
     // Innitialize useForm
-    const {
-        data,
-        setData,
-        get,
-        delete: destroy,
-    } = useForm({
+    const { data, setData, get } = useForm({
         search: filters?.search || "",
     });
     // Handle Search 🔍
@@ -24,7 +18,7 @@ function index({ logs, filters }) {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Logs - you can only see the log not config it
+                    Logs - you can only see the log, not config it!
                 </h2>
             }
         >
@@ -60,6 +54,7 @@ function index({ logs, filters }) {
                             <th>Id</th>
                             <th>User Id</th>
                             <th>Action</th>
+                            <th>Target Id</th>
                             <th>Created_at</th>
                             <th>Updated_at</th>
                         </tr>
@@ -75,6 +70,7 @@ function index({ logs, filters }) {
                                     <td className="p-3">{log.id}</td>
                                     <td className="p-3">{log.user_id}</td>
                                     <td className="p-3">{log.action}</td>
+                                    <td className="p-3">{log.target_id}</td>
                                     <td>
                                         {new Intl.DateTimeFormat("en-UK", {
                                             year: "numeric",
@@ -98,7 +94,7 @@ function index({ logs, filters }) {
                         ) : (
                             <tr>
                                 <td colSpan="12" className="text-center py-4">
-                                    No orders found.
+                                    No log found.
                                 </td>
                             </tr>
                         )}

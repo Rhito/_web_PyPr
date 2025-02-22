@@ -3,7 +3,6 @@ namespace App\Repositories;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
 
 class UserRepository {
     public function getAllUsers($search = null) {
@@ -49,6 +48,8 @@ class UserRepository {
         } else {
             $data['avatar'] = $user->avatar;
         }
+        $user->role = $data['role'];
+        $user->updated_at = now();
         
         $data['password'] = bcrypt($data['password']);
         $user->update($data);
@@ -56,10 +57,11 @@ class UserRepository {
         
     public function delete($id) {
         $user = $this->findById($id);
+
         if ($user->avartar) {
             Storage::disk('public')->delete($user->avartar);
         }
-        return $user->delete;
+        return $user->delete();
     }
 }
 

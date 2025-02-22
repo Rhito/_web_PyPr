@@ -34,6 +34,7 @@ class CouponRepository
     public function updateCoupon($id, array $data)
     {
         $coupon = Coupon::findOrFail($id);
+        $coupon->updated_at = now();
         $coupon->update($data);
         return $coupon;
     }
@@ -41,6 +42,6 @@ class CouponRepository
     public function deleteCoupon($id)
     {
         $coupon = Coupon::findOrFail($id);
-        $coupon->delete();
+         return $coupon->delete(); 
     }
 }

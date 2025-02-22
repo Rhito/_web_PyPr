@@ -19,7 +19,6 @@ function CreateUser() {
         e.preventDefault();
         post(route("user.create"), data, {
             onSuccess: () => {
-                console.log("Success!");
                 reset();
             },
             onError: (errors) => console.error("Errors:", errors),

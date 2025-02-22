@@ -63,6 +63,30 @@ class ProfileController extends Controller
         return back()->with('status', 'Avatar updated!');
     }
 
+     /**
+     * Update the user's phone and address.
+     */
+    public function updateContact(Request $request)
+    {
+        $request->validate([
+            'phone' => ['nullable', 'regex:/^[0-9]{9,11}$/'],
+             'address' => ['string', 'max: 255']
+
+        ]);
+
+        if ($request->user()->avatar) {
+            Storage::disk('public')->delete($request->user()->avatar);
+        }
+
+        if($request->hasFile('avatar') && $request->avatar != null){
+            $imagePath = $request->file('avatar')->store('userAvatar', 'public');
+            $request->user()->avatar = $imagePath;
+            $request->user()->save();
+        }
+
+        return back()->with('status', 'Avatar updated!');
+    }
+
     /**
      * Delete the user's account.
      */

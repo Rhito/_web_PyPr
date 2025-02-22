@@ -38,7 +38,7 @@ class UserController extends Controller
         $user = $this->userRepository->create($request->validated()); 
         $this->logRepository->createLog("Created User - Id: " . $user->id, $user->id);
         
-        return redirect()->route('users')->with(['success' => 'User created successfully']);
+        return redirect()->route('user')->with(['success' => 'User created successfully']);
     }
 
 

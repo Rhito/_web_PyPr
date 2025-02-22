@@ -1,41 +1,42 @@
-import InputError from "@/Components/InputError";
-import PrimaryButton from "@/Components/PrimaryButton";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import React, { use, useEffect } from "react";
 import { Head, useForm } from "@inertiajs/react";
-import { ToastContainer, toast } from "react-toastify";
-import React from "react";
-function edit({ orderDetail, coupons, orders, products }) {
+import InputError from "@/Components/InputError";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import PrimaryButton from "@/Components/PrimaryButton";
+
+function create({ orders }) {
     // Define the initial state of the form
-    const { data, setData, put, processing, errors, reset } = useForm({
-        id: orderDetail.id,
-        order_id: orderDetail.order_id,
-        product_id: orderDetail.product_id,
-        quantity: orderDetail.quantity,
-        coupon_id: orderDetail.coupon_id,
+    const { data, setData, post, processing, errors, reset } = useForm({
+        order_id: "",
+        shipping_status: "",
+        shipping_date: "",
+        shipping_address: "",
+        contact_phone: "",
     });
+    // Define the options for the select input
+    const optionsShippingStatus = ["shipped", "delivered", "pending"];
 
     // handle form submission
     const handleSubmit = (e) => {
-        e.preventDefault();
+        console.log(data);
 
-        put(route("order-details.update", { order_detail: data }), {
+        e.preventDefault();
+        post(route("shipping.store"), {
             onSuccess: () => {
                 reset();
             },
             preserveState: true,
         });
     };
-
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-grat-800">
-                    Edit order details
+                    Create new shipping
                 </h2>
             }
         >
-            <Head title="Edit Order Details" />
-            <ToastContainer />
+            <Head title="Create shipping" />
             <form
                 autoComplete="off"
                 onSubmit={handleSubmit}
@@ -72,87 +73,112 @@ function edit({ orderDetail, coupons, orders, products }) {
                     </select>
                     <InputError message={errors.order_id} name="order_id" />
                 </div>
-                {/* Select product_id */}
+                {/* Select shipping status */}
                 <div className="mb-4">
                     <label
-                        htmlFor="product_id"
+                        htmlFor="shipping_status"
                         className="block text-sm font-medium text-gray-700 mb-2"
                     >
-                        Product_Id
+                        shipping Status
                     </label>
                     <select
-                        name="product_id"
-                        id="product_id"
-                        value={data.product_id}
-                        onChange={(e) => setData("product_id", e.target.value)}
+                        name="shipping_status"
+                        id="shipping_status"
+                        value={data.shipping_status}
+                        onChange={(e) =>
+                            setData("shipping_status", e.target.value)
+                        }
                         className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                         <option value="" default disabled>
-                            Select a product_id
+                            Select an shipping status
                         </option>
                         {/* Options list */}
-                        {products && products.length > 0 ? (
-                            products.map((product) => (
-                                <option key={product.id} value={product.id}>
-                                    {product.id + " - " + product.name}
+                        {optionsShippingStatus &&
+                        optionsShippingStatus.length > 0 ? (
+                            optionsShippingStatus.map((option, index) => (
+                                <option key={index} value={option}>
+                                    {option[0].toUpperCase() + option.slice(1)}
                                 </option>
                             ))
                         ) : (
-                            <option value="">No product found</option>
+                            <option value="">No status found</option>
                         )}
                     </select>
-                    <InputError message={errors.product_id} name="product_id" />
+                    <InputError
+                        message={errors.shipping_status}
+                        name="shipping_status"
+                    />
                 </div>
-                {/* Select coupon_id */}
+                {/* Shipping date */}
                 <div className="mb-4">
                     <label
-                        htmlFor="coupon_id"
+                        htmlFor="shipping_date"
                         className="block text-sm font-medium text-gray-700 mb-2"
                     >
-                        Coupon Id
-                    </label>
-                    <select
-                        name="coupon_id"
-                        id="coupon_id"
-                        value={data.coupon_id}
-                        onChange={(e) => setData("coupon_id", e.target.value)}
-                        className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    >
-                        <option value="" default>
-                            No coupon
-                        </option>
-                        {/* Options list */}
-                        {coupons && coupons.length > 0 ? (
-                            coupons.map((coupon) => (
-                                <option key={coupon.id} value={coupon.id}>
-                                    {`Id: ${coupon.id} - Code: ${coupon.code} - Limit: ${coupon.usage_limit}`}
-                                </option>
-                            ))
-                        ) : (
-                            <option value="">No coupon found</option>
-                        )}
-                    </select>
-                    <InputError message={errors.coupon_id} name="coupon_id" />
-                </div>
-                {/* Quantity */}
-                <div className="mb-4">
-                    <label
-                        htmlFor="quantity"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                        Quantity
+                        Phone Contact
                     </label>
                     <input
-                        type="number"
-                        name="quantity"
-                        id="quantity"
-                        value={data.quantity}
-                        onChange={(e) => setData("quantity", e.target.value)}
+                        type="date"
+                        name="shipping_date"
+                        id="shipping_date"
+                        value={data.shipping_date}
+                        onChange={(e) =>
+                            setData("shipping_date", e.target.value)
+                        }
                         className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     />
-                    <InputError message={errors.quantity} name="quantity" />
+                    <InputError
+                        message={errors.shipping_date}
+                        name="shipping_date"
+                    />
                 </div>
-
+                {/* Phone contact */}
+                <div className="mb-4">
+                    <label
+                        htmlFor="contact_phone"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        Phone contact
+                    </label>
+                    <input
+                        type="tel"
+                        name="contact_phone"
+                        id="contact_phone"
+                        value={data.contact_phone}
+                        onChange={(e) =>
+                            setData("contact_phone", e.target.value)
+                        }
+                        className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    />
+                    <InputError
+                        message={errors.contact_phone}
+                        name="contact_phone"
+                    />
+                </div>
+                {/* Shipping address */}
+                <div className="mb-4">
+                    <label
+                        htmlFor="shipping_address"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        Shipping address
+                    </label>
+                    <input
+                        type="tel"
+                        name="shipping_address"
+                        id="shipping_address"
+                        value={data.shipping_address}
+                        onChange={(e) =>
+                            setData("shipping_address", e.target.value)
+                        }
+                        className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    />
+                    <InputError
+                        message={errors.shipping_address}
+                        name="shipping_address"
+                    />
+                </div>
                 {/* Submit button */}
                 <div className="flex items-center gap-4">
                     <PrimaryButton disabled={processing}>Save</PrimaryButton>
@@ -162,4 +188,4 @@ function edit({ orderDetail, coupons, orders, products }) {
     );
 }
 
-export default edit;
+export default create;

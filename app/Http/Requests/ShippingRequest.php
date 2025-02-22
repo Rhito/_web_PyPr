@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryRequest extends FormRequest
+class ShippingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,11 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:0','max:255'],
-            'description' => ['nullable'],
-            'parent_id' => ['nullable'],
+            'order_id' => ['required', 'integer'],
+            'shipping_status' => ['required', 'string'],
+            'shipping_address' => ['required', 'string', 'max:255'],
+            'shipping_date' => ['required', 'date'],
+            'contact_phone' => ['required', 'regex:/^(\+84|0)[1-9][0-9]{8,9}$/'],
         ];
     }
 }

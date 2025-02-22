@@ -41,8 +41,8 @@ class CategoryController extends Controller
 
     public function store(CategoryRequest $request): RedirectResponse
     {
-        $this->categoryRepository->createCategory($request->validated());
-        $this->logRepository->createLog("Created category", $request->id);
+        $category =  $this->categoryRepository->createCategory($request->validated());
+        $this->logRepository->createLog("Created category id: " . $category->id , $category->id);
 
         return redirect()->route('category')->with(['success' => 'Category created successfully']);
     }
@@ -56,8 +56,8 @@ class CategoryController extends Controller
 
     public function update(CategoryRequest $request): RedirectResponse
     {
-        $this->categoryRepository->updateCategory($request->id, $request->validated());
-        $this->logRepository->createLog("Updated category - Id: ". $request->id  , $request->id);
+        $category = $this->categoryRepository->updateCategory($request->id, $request->validated());
+        $this->logRepository->createLog("Updated category - Id: ". $category->id  , $category->id);
 
         return redirect()->route('category')->with(['success' => 'Category updated successfully']);
     }

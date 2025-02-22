@@ -6,13 +6,25 @@ import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationFor
 import Dropdown from "@/Components/Dropdown";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavLink from "@/Components/NavLink";
+import { ToastContainer, toast } from "react-toastify";
 
-export default function Edit({ mustVerifyEmail, status }) {
+export default function Edit({ mustVerifyEmail, status, flash }) {
     const user = usePage().props.auth.user;
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+
+    // Notification
+    useEffect(() => {
+        if (flash?.message?.success) {
+            toast.success(flash.message.success);
+        }
+        if (flash?.message?.error) {
+            toast.error(flash.message.error);
+        }
+    }, [flash]);
+
     return (
         <>
             <nav className="border-b border-gray-100 bg-white">
@@ -176,6 +188,7 @@ export default function Edit({ mustVerifyEmail, status }) {
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+                    <ToastContainer />
                     <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
                         <UpdateAvatarForm user={user} />
                     </div>

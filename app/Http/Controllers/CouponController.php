@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CouponRequest;
+use App\Models\Coupon;
 use App\Repositories\CouponRepository;
 use App\Models\Log;
 use App\Repositories\LogRepository;
@@ -39,8 +40,8 @@ class CouponController extends Controller
 
     public function store(CouponRequest $request)
     {
-        $this->couponRepository->createCoupon($request->validated());
-        $this->logRepository->createLog("Created Coupon", $request->id);
+        $coupon = $this->couponRepository->createCoupon($request->validated());
+        $this->logRepository->createLog("Created Coupon Id: ". $coupon->id, $coupon->id);
 
         return redirect()->route('coupon.index')->with('success', 'Coupon created successfully');
     }

@@ -23,8 +23,9 @@ class LogRepository
             $search = request()->search;
             $query->where(function ($q) use ($search) {
                 $q->where('action', 'like', '%' . $search . '%')
-                    ->where('id', 'like', '%' . $search . '%')
-                    ->orWhere('user_id', 'like', '%' . $search . '%');
+                    ->orWhere('id', 'like', '%' . $search . '%')
+                    ->orWhere('user_id', 'like', '%' . $search . '%')
+                    ->orWhere('target_id', 'like', '%' . $search . '%');
             });
         }
         return $query->orderBy('id', 'desc')->paginate(10)->withQueryString();

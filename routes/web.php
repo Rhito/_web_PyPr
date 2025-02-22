@@ -6,10 +6,13 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\UserController;
 use App\Models\Order;
+use App\Models\Shipping;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -73,6 +76,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('orders', OrderController::class);
         Route::resource('order-details', OrderDetailController::class);
         Route::resource('coupon', CouponController::class);
+        Route::resource('payments', PaymentController::class);
+        Route::resource('shipping', ShippingController::class);
 
         Route::get('logs', [LogController::class, 'index'])->name('log.index');
 

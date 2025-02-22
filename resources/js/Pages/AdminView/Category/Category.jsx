@@ -149,14 +149,14 @@ function Category({ categories, filters, flash }) {
                                         </Link>
                                     </td>
                                     <td>
-                                        <button
+                                        <a
                                             onClick={() =>
                                                 handleDelete(cate.id)
                                             }
-                                            className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
+                                            className="cursor-pointer px-3 py-1 text-sm font-medium text-white bg-red-500 rounded hover:bg-red-600"
                                         >
                                             Delete
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                             ))

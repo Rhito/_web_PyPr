@@ -22,6 +22,8 @@ export default function AuthenticatedLayout({ header, children }) {
             route: "order-details.index",
             prefix: "orders-details",
         },
+        { name: "Payments", route: "payments.index", prefix: "payments" },
+        { name: "Shipping", route: "shipping.index", prefix: "shipping" },
     ];
 
     return (

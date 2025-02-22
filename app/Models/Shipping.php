@@ -26,6 +26,7 @@ class Shipping extends Model
         'shipping_address',
         'shipping_status',
         'shipping_date',
+        'contact_phone',
     ];
 
     /**

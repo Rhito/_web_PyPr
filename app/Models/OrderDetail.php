@@ -26,6 +26,8 @@ class OrderDetail extends Model
         'product_id',
         'quantity',
         'unit_price',
+        'total_pay',
+        'coupon_id',
     ];
 
     /**
@@ -42,5 +44,11 @@ class OrderDetail extends Model
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    // Relationship to coupon
+    public function coupon()
+    {
+        return $this->belongsTo(Product::class, 'coupon_id');
     }
 }
